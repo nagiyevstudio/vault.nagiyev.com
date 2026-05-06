@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault — Личное хранилище</title>
+<meta name="description" content="Безопасное и стильное личное зашифрованное хранилище для ваших паролей, карт и документов.">
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vault">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:         #0b0b18;
+  --glass:      rgba(255,255,255,0.07);
+  --glass-2:    rgba(255,255,255,0.04);
+  --border:     rgba(255,255,255,0.11);
+  --border-hi:  rgba(255,255,255,0.22);
+  --text:       #f0f0ff;
+  --text-2:     rgba(240,240,255,0.5);
+  --text-3:     rgba(240,240,255,0.3);
+  --accent:     #6366f1;
+  --accent-2:   #8b5cf6;
+  --danger:     #ef4444;
+  --success:    #22c55e;
+  --radius-sm:  12px;
+  --radius:     20px;
+  --radius-lg:  28px;
+  --shadow:     0 16px 48px rgba(0,0,0,0.4);
+  --shadow-sm:  0 4px 16px rgba(0,0,0,0.3);
+}
+html, body { height: 100%; }
+body {
+  font-family: 'Figtree', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background Orbs ───────────────────────────────────────── */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb1 { width: 700px; height: 700px; top: -250px; right: -200px;
+        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%); }
+.orb2 { width: 600px; height: 600px; bottom: -200px; left: -150px;
+        background: radial-gradient(circle, rgba(236,72,153,0.18), transparent 70%); }
+.orb3 { width: 400px; height: 400px; top: 40%; left: 40%;
+        background: radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%); }
+
+/* ── Glass Utility ─────────────────────────────────────────── */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.03) 60%, rgba(255,255,255,0.1) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── Screens ───────────────────────────────────────────────── */
+.screen { position: relative; z-index: 1; }
+.hidden { display: none !important; }
+
+/* ── Login Screen ──────────────────────────────────────────── */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius-lg);
+  padding: 52px 44px;
+  box-shadow: var(--shadow);
+  animation: fadeUp .5s ease both;
+}
+.login-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+  display: block;
+  filter: drop-shadow(0 0 20px rgba(99,102,241,0.5));
+  object-fit: contain;
+}
+.login-card h1 { font-size: 32px; font-weight: 800; letter-spacing: -.5px; }
+.login-card .sub { color: var(--text-2); font-size: 15px; margin-top: 6px; margin-bottom: 36px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+.form-group input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.form-group input:focus { border-color: rgba(99,102,241,.6); background: rgba(255,255,255,0.08); }
+.form-group input::placeholder { color: var(--text-3); }
+.error-msg { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); border-radius: var(--radius-sm); padding: 12px 16px; color: #fca5a5; font-size: 14px; margin-bottom: 16px; }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: none; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: transform .15s, box-shadow .15s, opacity .15s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary {
+  padding: 14px 24px; font-size: 15px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(99,102,241,.4);
+}
+.btn-primary:hover { box-shadow: 0 10px 32px rgba(99,102,241,.55); transform: translateY(-1px); }
+.btn-full { width: 100%; justify-content: center; margin-top: 8px; }
+.btn-ghost {
+  padding: 10px 18px; font-size: 14px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+.btn-ghost:hover { background: rgba(255,255,255,.1); color: var(--text); }
+.btn-sm { padding: 9px 18px; font-size: 14px; }
+.btn-danger { background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.25); color: #fca5a5; }
+.btn-danger:hover { background: rgba(239,68,68,.25); }
+.btn-icon {
+  width: 32px; height: 32px; padding: 0;
+  justify-content: center;
+  background: rgba(255,255,255,.07);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  border-radius: 8px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.btn-icon:hover { background: rgba(255,255,255,.12); color: var(--text); }
+.btn-icon.copied { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.3); color: #86efac; }
+
+/* ── Header ────────────────────────────────────────────────── */
+.vault-header {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 24px;
+  border-radius: 0 0 var(--radius) var(--radius);
+  border-top: none;
+  box-shadow: var(--shadow-sm);
+}
+.header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.header-logo { width: 32px; height: 32px; object-fit: contain; }
+.header-title { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+.header-search { flex: 1; max-width: 400px; margin: 0 auto; }
+.header-search input {
+  width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--border);
+  border-radius: 100px; padding: 10px 18px;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
+  transition: border-color .2s, background .2s;
+}
+.header-search input:focus { border-color: rgba(99,102,241,.5); background: rgba(255,255,255,.09); }
+.header-search input::placeholder { color: var(--text-3); }
+.header-right { display: flex; gap: 10px; flex-shrink: 0; align-items: center; }
+
+/* ── Filter Tabs ───────────────────────────────────────────── */
+.filter-tabs {
+  display: flex; gap: 8px; padding: 20px 24px 8px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
+  background: var(--glass-2); color: var(--text-2);
+  font-family: 'Figtree', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+  transition: all .2s;
+}
+.tab:hover { background: var(--glass); color: var(--text); }
+.tab.active {
+  background: linear-gradient(135deg, rgba(99,102,241,.2), rgba(139,92,246,.2));
+  border-color: rgba(99,102,241,.4);
+  color: var(--text);
+}
+
+/* ── Vault Grid ────────────────────────────────────────────── */
+.vault-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 16px 24px 40px;
+}
+.empty-state {
+  grid-column: 1/-1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px; gap: 12px; color: var(--text-3);
+}
+.empty-state .icon { font-size: 48px; opacity: .5; }
+.empty-state p { font-size: 16px; }
+
+/* ── Item Cards ────────────────────────────────────────────── */
+.item-card {
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  animation: fadeUp .35s ease both;
+  overflow: hidden;
+}
+.item-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.5); }
+
+/* Bank Card */
+.bank-card-visual {
+  width: 100%; aspect-ratio: 1.586;
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.bank-card-visual::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.card-chip { font-size: 28px; opacity: .9; }
+.card-number-display {
+  font-size: 17px; font-weight: 600; letter-spacing: 3px;
+  color: rgba(255,255,255,.85); font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 8px rgba(0,0,0,.4);
+}
+.card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+.card-holder { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.7); }
+.card-expiry-label { font-size: 9px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .8px; }
+.card-expiry-val { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); }
+.card-bank-name { font-size: 18px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: -.3px; }
+
+/* Document Card */
+.doc-card {
+  padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.doc-card-head { display: flex; align-items: center; gap: 12px; }
+.doc-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.doc-icon.type-document { background: rgba(59,130,246,.15); }
+.doc-icon.type-login    { background: rgba(99,102,241,.15); }
+.doc-icon.type-note     { background: rgba(251,191,36,.1);  }
+.doc-card-title { font-size: 17px; font-weight: 700; }
+.doc-card-type  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.doc-card-preview {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.doc-chip {
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(255,255,255,.06); border: 1px solid var(--border);
+  font-size: 12px; color: var(--text-2);
+}
+.doc-card-date { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* ── Modals ────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: fadeIn .2s ease;
+}
+.modal {
+  width: 100%; max-width: 520px;
+  max-height: 90vh; overflow-y: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
+  animation: scaleIn .25s ease;
+}
+.modal::-webkit-scrollbar { width: 4px; }
+.modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+
+/* View Modal */
+.view-modal-content { padding: 32px; }
+.view-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
+.view-modal-header-info { display: flex; align-items: center; gap: 12px; }
+.view-modal-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.view-modal-title { font-size: 22px; font-weight: 800; }
+.view-modal-subtitle { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.view-modal-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.bank-card-large {
+  width: 100%; aspect-ratio: 1.586;
+  border-radius: var(--radius);
+  padding: 28px 30px;
+  margin-bottom: 24px;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.bank-card-large::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+}
+.bank-card-large .card-chip { font-size: 36px; }
+.bank-card-large .card-number-display { font-size: 22px; letter-spacing: 4px; }
+.bank-card-large .card-bank-name { font-size: 22px; }
+
+/* Field rows */
+.fields-list { display: flex; flex-direction: column; gap: 12px; }
+.field-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.field-info { flex: 1; min-width: 0; }
+.field-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 4px; }
+.field-value { font-size: 15px; color: var(--text); word-break: break-all; }
+.field-value.mono { font-family: 'SF Mono', 'Fira Code', monospace; letter-spacing: 1.5px; }
+.field-value.secret { letter-spacing: 3px; color: var(--text-2); }
+.modal-footer { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+
+/* Edit Modal */
+.edit-modal-content { padding: 32px; }
+.edit-modal-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; }
+.type-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+.type-tab {
+  padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--glass-2); color: var(--text-2);
+  font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.type-tab:hover { background: var(--glass); }
+.type-tab.active {
+  background: rgba(99,102,241,.2); border-color: rgba(99,102,241,.4); color: var(--text);
+}
+.edit-field { margin-bottom: 16px; }
+.edit-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
+.edit-field input, .edit-field select, .edit-field textarea {
+  width: 100%;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
+  transition: border-color .2s, background .2s;
+}
+.edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
+  border-color: rgba(99,102,241,.6); background: rgba(255,255,255,.08);
+}
+.edit-field input::placeholder, .edit-field textarea::placeholder { color: var(--text-3); }
+.edit-field select option { background: #1a1a2e; }
+.edit-field textarea { resize: vertical; min-height: 90px; }
+.edit-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-dot {
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .15s, border-color .15s;
+}
+.color-dot:hover { transform: scale(1.1); }
+.color-dot.selected { border-color: rgba(255,255,255,.8); transform: scale(1.15); }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.94) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.stagger { animation-delay: calc(var(--i, 0) * 60ms); }
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .vault-header { flex-wrap: wrap; }
+  .header-search { order: 3; flex-basis: 100%; max-width: none; }
+  .vault-grid { grid-template-columns: 1fr; padding: 12px 16px 40px; }
+  .modal { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background Orbs -->
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<!-- ══ Login Screen ══════════════════════════════════════════ -->
+<div id="login-screen" class="screen hidden">
+  <div class="login-card glass">
+    <img src="logo.png" alt="Vault Logo" class="login-logo">
+    <h1>Vault</h1>
+    <p class="sub">Личное зашифрованное хранилище</p>
+
+    <div id="login-error" class="error-msg hidden"></div>
+
+    <div class="form-group">
+      <label>Логин</label>
+      <input type="text" id="login-username" autocomplete="username" placeholder="ваш логин">
+    </div>
+    <div class="form-group">
+      <label>Пароль</label>
+      <input type="password" id="login-password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary btn-full" id="login-btn">Войти</button>
+  </div>
+</div>
+
+<!-- ══ Vault Screen ══════════════════════════════════════════ -->
+<div id="vault-screen" class="screen hidden">
+
+  <header class="vault-header glass">
+    <div class="header-left">
+      <img src="logo.png" alt="Logo" class="header-logo">
+      <span class="header-title">Vault</span>
+    </div>
+    <div class="header-search">
+      <input type="search" id="search-input" placeholder="🔍  Поиск..." autocomplete="off">
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary btn-sm" id="add-btn">+ Добавить</button>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Выйти</button>
+    </div>
+  </header>
+
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="tab active" data-filter="all">Все</button>
+    <button class="tab" data-filter="card">💳 Карты</button>
+    <button class="tab" data-filter="document">📄 Документы</button>
+    <button class="tab" data-filter="login">🔑 Пароли</button>
+    <button class="tab" data-filter="note">📝 Заметки</button>
+  </div>
+
+  <main class="vault-grid" id="vault-grid"></main>
+</div>
+
+<!-- ══ View Modal ════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="view-overlay">
+  <div class="modal glass" id="view-modal">
+    <div class="view-modal-content" id="view-modal-content"></div>
+  </div>
+</div>
+
+<!-- ══ Edit Modal ════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="edit-overlay">
+  <div class="modal glass">
+    <div class="edit-modal-content">
+      <h2 class="edit-modal-title" id="edit-modal-title">Добавить</h2>
+
+      <div class="type-tabs" id="type-tabs">
+        <button class="type-tab active" data-type="card">💳 Карта</button>
+        <button class="type-tab" data-type="document">📄 Документ</button>
+        <button class="type-tab" data-type="login">🔑 Пароль</button>
+        <button class="type-tab" data-type="note">📝 Заметка</button>
+      </div>
+
+      <div class="edit-field">
+        <label>Название <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="ef-title" placeholder="Как называть эту запись">
+      </div>
+
+      <div id="dynamic-fields"></div>
+
+      <div id="edit-error" class="error-msg hidden" style="margin-top:12px;margin-bottom:0"></div>
+
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="edit-cancel-btn">Отмена</button>
+        <button class="btn btn-primary" id="edit-save-btn">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  State
+// ══════════════════════════════════════════════════════════════
+const S = {
+  items:       [],
+  filter:      'all',
+  search:      '',
+  editType:    'card',
+  editId:      null,   // null = add, number = edit
+};
+
+// ── Card color presets ─────────────────────────────────────
+const CARD_COLORS = [
+  { id:'midnight', g:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)' },
+  { id:'indigo',   g:'linear-gradient(135deg,#4f46e5,#7c3aed)' },
+  { id:'rose',     g:'linear-gradient(135deg,#be185d,#f43f5e)' },
+  { id:'ocean',    g:'linear-gradient(135deg,#0369a1,#06b6d4)' },
+  { id:'emerald',  g:'linear-gradient(135deg,#065f46,#10b981)' },
+  { id:'gold',     g:'linear-gradient(135deg,#92400e,#d97706)' },
+  { id:'carbon',   g:'linear-gradient(135deg,#18181b,#3f3f46)' },
+  { id:'aurora',   g:'linear-gradient(135deg,#4a044e,#7e22ce,#1e3a5f)' },
+];
+let selectedColor = CARD_COLORS[0].id;
+
+const DOC_TYPES = ['Паспорт','ID карта','Водительские права','Загранпаспорт','Медицинский полис','ИНН','Другое'];
+
+// ══════════════════════════════════════════════════════════════
+//  API
+// ══════════════════════════════════════════════════════════════
+async function api(action, method='GET', body=null, id=null) {
+  const url = `api.php?action=${action}${id ? '&id='+id : ''}`;
+  const opts = { method, headers:{'Content-Type':'application/json'} };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  return r.json();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Auth
+// ══════════════════════════════════════════════════════════════
+async function init() {
+  const r = await api('check');
+  if (r.authenticated) showVault();
+  else showLogin();
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.classList.add('hidden');
+
+  if (!username || !password) { errEl.textContent='Заполни оба поля'; errEl.classList.remove('hidden'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Вход...'; btn.disabled = true;
+
+  const r = await api('login','POST',{username,password});
+  btn.textContent = 'Войти'; btn.disabled = false;
+
+  if (r.ok) { showVault(); }
+  else { errEl.textContent = r.error || 'Ошибка'; errEl.classList.remove('hidden'); }
+}
+
+async function doLogout() {
+  await api('logout','POST');
+  showLogin();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Items
+// ══════════════════════════════════════════════════════════════
+async function loadItems() {
+  const r = await api('items');
+  S.items = r.items || [];
+  renderGrid();
+}
+
+async function loadItemDetail(id) {
+  const r = await api('item','GET',null,id);
+  return r.item;
+}
+
+async function saveItem() {
+  const errEl = document.getElementById('edit-error');
+  errEl.classList.add('hidden');
+
+  const title = document.getElementById('ef-title').value.trim();
+  if (!title) { errEl.textContent='Введи название'; errEl.classList.remove('hidden'); return; }
+
+  const type  = S.editType;
+  const data  = collectFormData(type);
+  const color = (type === 'card') ? selectedColor : null;
+
+  const btn = document.getElementById('edit-save-btn');
+  btn.textContent = 'Сохранение...'; btn.disabled = true;
+
+  let r;
+  if (S.editId) {
+    r = await api('item','PUT',{type,title,data,color},S.editId);
+  } else {
+    r = await api('items','POST',{type,title,data,color});
+  }
+  btn.textContent = 'Сохранить'; btn.disabled = false;
+
+  if (r.ok) {
+    closeEdit();
+    await loadItems();
+  } else {
+    errEl.textContent = r.error || 'Ошибка сохранения';
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deleteItem(id) {
+  if (!confirm('Удалить эту запись?')) return;
+  await api('item','DELETE',null,id);
+  closeView();
+  await loadItems();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Screens
+// ══════════════════════════════════════════════════════════════
+function showLogin() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('vault-screen').classList.add('hidden');
+  document.getElementById('login-username').focus();
+}
+
+async function showVault() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('vault-screen').classList.remove('hidden');
+  await loadItems();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Grid Rendering
+// ══════════════════════════════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('vault-grid');
+  let items = S.items;
+
+  if (S.filter !== 'all') items = items.filter(i => i.type === S.filter);
+  if (S.search) {
+    const q = S.search.toLowerCase();
+    items = items.filter(i => i.title.toLowerCase().includes(q));
+  }
+
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state"><span class="icon">🗄️</span><p>Ничего нет. Добавь первую запись!</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((item, idx) => renderItemCard(item, idx)).join('');
+
+  grid.querySelectorAll('.item-card').forEach(el => {
+    el.addEventListener('click', () => openView(+el.dataset.id));
+  });
+}
+
+function renderItemCard(item, idx) {
+  const style = `--i:${idx}`;
+  if (item.type === 'card') return renderBankCardThumb(item, style);
+  return renderGenericCard(item, style);
+}
+
+function renderBankCardThumb(item, style) {
+  const col = CARD_COLORS.find(c => c.id === item.color) || CARD_COLORS[0];
+  const p = item.preview || {};
+  const masked = p.last4 || '•••• •••• •••• ••••';
+
+  return `
+  <div class="item-card stagger" data-id="${item.id}" style="${style}">
+    <div class="bank-card-visual" style="background:${col.g}">
+      <div class="card-chip">💳</div>
+      <div class="card-number-display">${masked}</div>
+      <div class="card-footer">
+        <div>
+          <div class="card-holder">${esc(item.title)}</div>
+          <div class="card-expiry-val" style="font-size:10px;margin-top:2px;opacity:.7">${esc(p.expiry || '')}</div>
+        </div>
+        <div class="card-bank-name" style="font-size:14px;opacity:.9;text-align:right;max-width:60%">${esc(p.bank || '')}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGenericCard(item, style) {
+  const icons = { document:'📄', login:'🔑', note:'📝' };
+  const labels = { document:'Документ', login:'Логин / Пароль', note:'Заметка' };
+  const date = new Date(item.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
+  return `
+  <div class="item-card glass stagger" data-id="${item.id}" style="${style}">
+    <div class="doc-card">
+      <div class="doc-card-head">
+        <div class="doc-icon type-${item.type}">${icons[item.type]||'📝'}</div>
+        <div>
+          <div class="doc-card-title">${esc(item.title)}</div>
+          <div class="doc-card-type">${labels[item.type]||item.type}</div>
+        </div>
+      </div>
+      <div class="doc-card-date">Добавлено ${date}</div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  View Modal
+// ══════════════════════════════════════════════════════════════
+async function openView(id) {
+  const item = await loadItemDetail(id);
+  if (!item) return;
+  const overlay = document.getElementById('view-overlay');
+  document.getElementById('view-modal-content').innerHTML = buildViewContent(item);
+  overlay.classList.remove('hidden');
+
+  // Wire edit/delete
+  overlay.querySelector('#view-edit-btn')?.addEventListener('click', () => { closeView(); openEdit(item); });
+  overlay.querySelector('#view-delete-btn')?.addEventListener('click', () => deleteItem(item.id));
+  overlay.querySelector('#view-close-btn')?.addEventListener('click', closeView);
+
+  // Wire copy buttons
+  overlay.querySelectorAll('.copy-field-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      copyText(btn.dataset.value, btn);
+    });
+  });
+}
+
+function buildViewContent(item) {
+  const labels = { card:'💳 Банковская карта', document:'📄 Документ', login:'🔑 Пароль / Логин', note:'📝 Заметка' };
+  const d = item.data || {};
+  const col = CARD_COLORS.find(c => c.id === item.color);
+  const colorDot = col ? `<div class="view-modal-dot" style="background:${col.g}"></div>` : '';
+
+  let body = '';
+
+  if (item.type === 'card') {
+    const num = d.card_number || '';
+    body += `
+    <div class="fields-list">
+      ${fieldRow('Банк / Название', d.bank||item.title, false)}
+      ${fieldRow('Номер карты', num, true, true)}
+      ${fieldRow('Владелец', d.cardholder||'')}
+      ${fieldRow('Срок', d.expiry||'')}
+      ${fieldRow('CVV', d.cvv||'', false, false, true)}
+      ${d.notes ? fieldRow('Заметка', d.notes) : ''}
+    </div>`;
+  } else if (item.type === 'document') {
+    body += `<div class="fields-list">
+      ${fieldRow('Тип документа', d.doc_type||'')}
+      ${fieldRow('Номер', d.doc_number||'', true)}
+      ${d.name      ? fieldRow('Имя', d.name) : ''}
+      ${d.issued_by ? fieldRow('Кем выдан', d.issued_by) : ''}
+      ${d.issue_date? fieldRow('Дата выдачи', d.issue_date) : ''}
+      ${d.expiry    ? fieldRow('Срок действия', d.expiry) : ''}
+      ${d.notes     ? fieldRow('Заметка', d.notes) : ''}
+    </div>`;
+  } else if (item.type === 'login') {
+    body += `<div class="fields-list">
+      ${d.url      ? fieldRow('Сайт', d.url, true) : ''}
+      ${fieldRow('Логин / Email', d.username||'', true)}
+      ${fieldRow('Пароль', d.password||'', true, false, true)}
+      ${d.notes    ? fieldRow('Заметка', d.notes) : ''}
+    </div>`;
+  } else {
+    body += `<div class="fields-list">
+      ${fieldRow('Содержимое', d.content||'')}
+    </div>`;
+  }
+
+  return `
+  <div class="view-modal-header">
+    <div class="view-modal-header-info">
+      ${colorDot}
+      <div>
+        <div class="view-modal-title">${esc(item.title)}</div>
+        <div class="view-modal-subtitle">${labels[item.type]||item.type}</div>
+      </div>
+    </div>
+    <button class="btn btn-icon" id="view-close-btn" title="Закрыть">✕</button>
+  </div>
+  ${body}
+  <div class="modal-footer">
+    <button class="btn btn-danger btn-sm" id="view-delete-btn">🗑 Удалить</button>
+    <button class="btn btn-ghost btn-sm" id="view-edit-btn">✏️ Изменить</button>
+  </div>`;
+}
+
+function fieldRow(label, value, copyable=false, mono=false, secret=false) {
+  if (!value) return '';
+  const cls = mono ? 'mono' : secret ? 'secret' : '';
+  const display = secret ? '••••••••' : esc(value);
+  const showToggle = secret ? `<button class="btn btn-icon" onclick="toggleSecret(this,'${esc(value).replace(/'/g,"\\'")}')">👁</button>` : '';
+  const copyBtn = copyable || secret ? `<button class="btn btn-icon copy-field-btn" data-value="${esc(value)}" title="Копировать">⎘</button>` : '';
+  return `
+  <div class="field-row">
+    <div class="field-info">
+      <div class="field-label">${esc(label)}</div>
+      <div class="field-value ${cls}" id="fv-${Math.random().toString(36).slice(2)}">${display}</div>
+    </div>
+    ${showToggle}${copyBtn}
+  </div>`;
+}
+
+function toggleSecret(btn, value) {
+  const fv = btn.closest('.field-row').querySelector('.field-value');
+  if (fv.dataset.shown === '1') { fv.textContent = '••••••••'; fv.dataset.shown='0'; btn.textContent='👁'; }
+  else { fv.textContent = value; fv.dataset.shown='1'; btn.textContent='🔒'; }
+}
+window.toggleSecret = toggleSecret;
+
+function closeView() {
+  document.getElementById('view-overlay').classList.add('hidden');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Edit Modal
+// ══════════════════════════════════════════════════════════════
+function openAdd() {
+  S.editId = null;
+  S.editType = 'card';
+  selectedColor = CARD_COLORS[0].id;
+  document.getElementById('edit-modal-title').textContent = 'Добавить запись';
+  document.getElementById('ef-title').value = '';
+  document.getElementById('edit-error').classList.add('hidden');
+  setActiveTypeTab('card');
+  renderDynamicFields('card', {});
+  document.getElementById('edit-overlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('ef-title').focus(), 50);
+}
+
+function openEdit(item) {
+  S.editId = item.id;
+  S.editType = item.type;
+  selectedColor = item.color || CARD_COLORS[0].id;
+  document.getElementById('edit-modal-title').textContent = 'Редактировать';
+  document.getElementById('ef-title').value = item.title;
+  document.getElementById('edit-error').classList.add('hidden');
+  setActiveTypeTab(item.type);
+  renderDynamicFields(item.type, item.data || {});
+  document.getElementById('edit-overlay').classList.remove('hidden');
+}
+
+function closeEdit() {
+  document.getElementById('edit-overlay').classList.add('hidden');
+}
+
+function setActiveTypeTab(type) {
+  document.querySelectorAll('.type-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.type === type);
+  });
+}
+
+function renderDynamicFields(type, data) {
+  const container = document.getElementById('dynamic-fields');
+  let html = '';
+
+  if (type === 'card') {
+    html = `
+    <div class="edit-field-row">
+      <div class="edit-field"><label>Банк</label><input id="ef-bank" placeholder="Kapital Bank, ABB..." value="${esc(data.bank||'')}"></div>
+      <div class="edit-field"><label>Владелец карты</label><input id="ef-cardholder" placeholder="FAIK ALIYEV" value="${esc(data.cardholder||'')}"></div>
+    </div>
+    <div class="edit-field"><label>Номер карты (16 цифр)</label><input id="ef-card-number" placeholder="0000 0000 0000 0000" maxlength="19" value="${esc(data.card_number||'')}"></div>
+    <div class="edit-field-row">
+      <div class="edit-field"><label>Срок (MM/YY)</label><input id="ef-expiry" placeholder="12/28" maxlength="5" value="${esc(data.expiry||'')}"></div>
+      <div class="edit-field"><label>CVV</label><input id="ef-cvv" placeholder="•••" maxlength="4" type="password" value="${esc(data.cvv||'')}"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="edit-field">
+      <label>Цвет карты</label>
+      <div class="color-picker" id="color-picker">
+        ${CARD_COLORS.map(c=>`<div class="color-dot${c.id===selectedColor?' selected':''}" data-id="${c.id}" style="background:${c.g}" title="${c.id}"></div>`).join('')}
+      </div>
+    </div>
+    <div class="edit-field"><label>Заметка</label><textarea id="ef-notes" placeholder="Необязательно">${esc(data.notes||'')}</textarea></div>`;
+  } else if (type === 'document') {
+    html = `
+    <div class="edit-field"><label>Тип документа</label>
+      <select id="ef-doc-type">
+        ${DOC_TYPES.map(t=>`<option${data.doc_type===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div class="edit-field"><label>Номер документа</label><input id="ef-doc-number" placeholder="AA1234567" value="${esc(data.doc_number||'')}"></div>
+    <div class="edit-field"><label>Имя (как в документе)</label><input id="ef-name" placeholder="FAIK ALIYEV" value="${esc(data.name||'')}"></div>
+    <div class="edit-field-row">
+      <div class="edit-field"><label>Дата выдачи</label><input id="ef-issue-date" type="date" value="${esc(data.issue_date||'')}"></div>
+      <div class="edit-field"><label>Срок действия</label><input id="ef-expiry" type="date" value="${esc(data.expiry||'')}"></div>
+    </div>
+    <div class="edit-field"><label>Кем выдан</label><input id="ef-issued-by" placeholder="МВД Азербайджана" value="${esc(data.issued_by||'')}"></div>
+    <div class="edit-field"><label>Заметка</label><textarea id="ef-notes" placeholder="Необязательно">${esc(data.notes||'')}</textarea></div>`;
+  } else if (type === 'login') {
+    html = `
+    <div class="edit-field"><label>Сайт / Приложение</label><input id="ef-url" placeholder="https://example.com" type="url" value="${esc(data.url||'')}"></div>
+    <div class="edit-field"><label>Логин / Email</label><input id="ef-username" placeholder="user@email.com" autocomplete="off" value="${esc(data.username||'')}"></div>
+    <div class="edit-field"><label>Пароль</label><input id="ef-password" type="password" placeholder="••••••••" autocomplete="new-password" value="${esc(data.password||'')}"></div>
+    <div class="edit-field"><label>Заметка</label><textarea id="ef-notes" placeholder="Необязательно">${esc(data.notes||'')}</textarea></div>`;
+  } else {
+    html = `
+    <div class="edit-field"><label>Содержимое</label><textarea id="ef-content" placeholder="Текст заметки..." style="min-height:140px">${esc(data.content||'')}</textarea></div>`;
+  }
+
+  container.innerHTML = html;
+
+  // Color picker
+  container.querySelectorAll('.color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      container.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+      selectedColor = dot.dataset.id;
+    });
+  });
+
+  // Card number formatting
+  const cardNumInput = container.querySelector('#ef-card-number');
+  if (cardNumInput) {
+    cardNumInput.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,16);
+      this.value = v.match(/.{1,4}/g)?.join(' ') || v;
+    });
+  }
+
+  // Expiry formatting (MM/YY)
+  const expiryInput = container.querySelector('#ef-expiry[maxlength="5"]');
+  if (expiryInput) {
+    expiryInput.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'');
+      if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4);
+      this.value = v;
+    });
+  }
+}
+
+function collectFormData(type) {
+  const g = id => document.getElementById(id)?.value?.trim() || '';
+  if (type === 'card') return { bank:g('ef-bank'), cardholder:g('ef-cardholder'), card_number:g('ef-card-number').replace(/\s/g,''), expiry:g('ef-expiry'), cvv:g('ef-cvv'), notes:g('ef-notes') };
+  if (type === 'document') return { doc_type:g('ef-doc-type'), doc_number:g('ef-doc-number'), name:g('ef-name'), issue_date:g('ef-issue-date'), expiry:g('ef-expiry'), issued_by:g('ef-issued-by'), notes:g('ef-notes') };
+  if (type === 'login') return { url:g('ef-url'), username:g('ef-username'), password:g('ef-password'), notes:g('ef-notes') };
+  return { content:g('ef-content') };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Copy
+// ══════════════════════════════════════════════════════════════
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btn.textContent;
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Utilities
+// ══════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Event Wiring
+// ══════════════════════════════════════════════════════════════
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('logout-btn').addEventListener('click', doLogout);
+document.getElementById('add-btn').addEventListener('click', openAdd);
+document.getElementById('edit-cancel-btn').addEventListener('click', closeEdit);
+document.getElementById('edit-save-btn').addEventListener('click', saveItem);
+
+// Filter tabs
+document.getElementById('filter-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  S.filter = tab.dataset.filter;
+  renderGrid();
+});
+
+// Type tabs in edit modal
+document.getElementById('type-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.type-tab');
+  if (!tab || S.editId) return; // Can't change type when editing
+  setActiveTypeTab(tab.dataset.type);
+  S.editType = tab.dataset.type;
+  renderDynamicFields(tab.dataset.type, {});
+});
+
+// Search
+document.getElementById('search-input').addEventListener('input', e => {
+  S.search = e.target.value;
+  renderGrid();
+});
+
+// Close modals on overlay click
+document.getElementById('view-overlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeView(); });
+document.getElementById('edit-overlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeEdit(); });
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeView(); closeEdit(); }
+});
+
+// ── Go! ────────────────────────────────────────────────────
+init();
+// ══════════════════════════════════════════════════════════════
+//  Service Worker
+// ══════════════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('SW registered!', reg);
+    }).catch(err => {
+      console.log('SW registration failed: ', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
