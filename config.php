@@ -19,3 +19,5 @@ define('SESSION_TIMEOUT', 7200);
 
 // App title (показывается в браузере)
 define('APP_TITLE', 'Vault');
+
+define('SETUP_TOKEN', 'jaghrang-baghrang');
