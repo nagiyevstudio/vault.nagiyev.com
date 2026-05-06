@@ -766,11 +766,19 @@ function buildViewContent(item) {
   let body = '';
 
   if (item.type === 'card') {
-    const num = d.card_number || '';
+    const numFull = (d.card_number || '').replace(/(.{4})/g, '$1 ').trim();
+    const numMasked = maskCardNumber(d.card_number || '');
     body += `
     <div class="fields-list">
       ${fieldRow('Банк / Название', d.bank||item.title, false)}
-      ${fieldRow('Номер карты', num, true, true)}
+      <div class="field-row">
+        <div class="field-info">
+          <div class="field-label">НОМЕР КАРТЫ</div>
+          <div class="field-value mono" id="fv-cardnum" data-full="${esc(numFull)}" data-masked="${esc(numMasked)}" data-shown="0">${esc(numMasked)}</div>
+        </div>
+        <button class="btn btn-icon" onclick="toggleCardNum(this)">👁</button>
+        <button class="btn btn-icon copy-field-btn" data-value="${esc((d.card_number||'').replace(/(.{4})/g,'$1 ').trim())}" title="Копировать">⎘</button>
+      </div>
       ${fieldRow('Владелец', d.cardholder||'')}
       ${fieldRow('Срок', d.expiry||'')}
       ${fieldRow('CVV', d.cvv||'', false, false, true)}
@@ -839,6 +847,31 @@ function toggleSecret(btn, value) {
   else { fv.textContent = value; fv.dataset.shown='1'; btn.textContent='🔒'; }
 }
 window.toggleSecret = toggleSecret;
+
+function maskCardNumber(num) {
+  if (!num) return '';
+  const groups = num.replace(/\s/g,'').match(/.{1,4}/g) || [];
+  if (groups.length < 3) return num;
+  const first = groups[0];
+  const last = groups[groups.length - 1];
+  const middle = groups.slice(1, -1).map(() => '****').join(' ');
+  return [first, middle, last].join(' ');
+}
+
+function toggleCardNum(btn) {
+  const fv = document.getElementById('fv-cardnum');
+  if (!fv) return;
+  if (fv.dataset.shown === '1') {
+    fv.textContent = fv.dataset.masked;
+    fv.dataset.shown = '0';
+    btn.textContent = '👁';
+  } else {
+    fv.textContent = fv.dataset.full;
+    fv.dataset.shown = '1';
+    btn.textContent = '🔒';
+  }
+}
+window.toggleCardNum = toggleCardNum;
 
 function closeView() {
   document.getElementById('view-overlay').classList.add('hidden');
