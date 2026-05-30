@@ -135,13 +135,27 @@ function actionGetItems(): void {
     $items = $stmt->fetchAll();
 
     foreach ($items as &$item) {
+        $raw = json_decode(decrypt($item['data']), true) ?: [];
         if ($item['type'] === 'card') {
-            $raw = json_decode(decrypt($item['data']), true) ?: [];
             $num = preg_replace('/\D/', '', $raw['card_number'] ?? '');
             $item['preview'] = [
                 'bank'   => $raw['bank']   ?? '',
                 'expiry' => $raw['expiry'] ?? '',
                 'last4'  => strlen($num) >= 4 ? substr($num, 0, 4) . ' •••• •••• ' . substr($num, -4) : '',
+            ];
+        } elseif ($item['type'] === 'document') {
+            $item['preview'] = [
+                'doc_type' => $raw['doc_type'] ?? '',
+            ];
+        } elseif ($item['type'] === 'login') {
+            $item['preview'] = [
+                'username' => $raw['username'] ?? '',
+                'url'      => $raw['url']      ?? '',
+            ];
+        } elseif ($item['type'] === 'note') {
+            $content = $raw['content'] ?? '';
+            $item['preview'] = [
+                'snippet' => mb_substr($content, 0, 60),
             ];
         }
         unset($item['data']); // never expose raw encrypted blob in list

@@ -15,10 +15,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vault">
 
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+
 <style>
 /* ── Reset & Base ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,20 +25,20 @@
   --bg:         #0b0b18;
   --glass:      rgba(255,255,255,0.07);
   --glass-2:    rgba(255,255,255,0.04);
-  --border:     rgba(255,255,255,0.11);
-  --border-hi:  rgba(255,255,255,0.22);
+  --border:     rgba(255,255,255,0.10);
+  --border-hi:  rgba(255,255,255,0.20);
   --text:       #f0f0ff;
   --text-2:     rgba(240,240,255,0.5);
-  --text-3:     rgba(240,240,255,0.3);
+  --text-3:     rgba(240,240,255,0.28);
   --accent:     #6366f1;
   --accent-2:   #8b5cf6;
   --danger:     #ef4444;
   --success:    #22c55e;
-  --radius-sm:  8px;
-  --radius:     10px;
-  --radius-lg:  10px;
-  --shadow:     0 16px 48px rgba(0,0,0,0.5);
+  --r:          8px;   /* universal border-radius */
+  --r-lg:       10px;
+  --shadow:     0 16px 48px rgba(0,0,0,0.45);
   --shadow-sm:  0 4px 16px rgba(0,0,0,0.3);
+  --tab-h:      62px;
 }
 html, body { height: 100%; }
 body {
@@ -51,40 +50,10 @@ body {
 }
 
 /* ── Background Orbs ───────────────────────────────────────── */
-.bg-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-}
-.orb1 { width: 700px; height: 700px; top: -250px; right: -200px;
-        background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%); }
-.orb2 { width: 600px; height: 600px; bottom: -200px; left: -150px;
-        background: radial-gradient(circle, rgba(236,72,153,0.18), transparent 70%); }
-.orb3 { width: 400px; height: 400px; top: 40%; left: 40%;
-        background: radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%); }
-
-/* ── Glass Utility ─────────────────────────────────────────── */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid var(--border);
-  position: relative;
-}
-.glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(145deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.03) 60%, rgba(255,255,255,0.1) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+.bg-orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+.orb1 { width:700px;height:700px;top:-250px;right:-200px; background:radial-gradient(circle,rgba(99,102,241,.25),transparent 70%); }
+.orb2 { width:600px;height:600px;bottom:-200px;left:-150px; background:radial-gradient(circle,rgba(236,72,153,.18),transparent 70%); }
+.orb3 { width:400px;height:400px;top:40%;left:40%; background:radial-gradient(circle,rgba(139,92,246,.12),transparent 70%); }
 
 /* ── Screens ───────────────────────────────────────────────── */
 .screen { position: relative; z-index: 1; }
@@ -93,422 +62,345 @@ body {
 /* ── Login Screen ──────────────────────────────────────────── */
 #login-screen {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
 .login-card {
-  width: 100%;
-  max-width: 420px;
-  border-radius: var(--radius-lg);
-  padding: 52px 44px;
+  width: 100%; max-width: 420px;
+  border-radius: var(--r-lg);
+  padding: 48px 40px;
   box-shadow: var(--shadow);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border);
   animation: fadeUp .5s ease both;
 }
 .login-logo {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 24px;
-  display: block;
-  filter: drop-shadow(0 0 20px rgba(99,102,241,0.5));
+  width: 68px; height: 68px;
+  margin-bottom: 18px; display: block;
+  filter: drop-shadow(0 0 20px rgba(99,102,241,.5));
   object-fit: contain;
 }
-.login-card h1 { font-size: 32px; font-weight: 800; letter-spacing: -.5px; }
-.login-card .sub { color: var(--text-2); font-size: 15px; margin-top: 6px; margin-bottom: 36px; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+.login-card h1 { font-size: 28px; font-weight: 800; letter-spacing: -.4px; }
+.login-card .sub { color: var(--text-2); font-size: 14px; margin-top: 5px; margin-bottom: 28px; }
+.form-group { margin-bottom: 13px; }
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 7px; }
 .form-group input {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
-  color: var(--text);
-  font-family: 'Figtree', sans-serif;
-  font-size: 15px;
-  outline: none;
+  width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 15px;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
   transition: border-color .2s, background .2s;
 }
-.form-group input:focus { border-color: rgba(99,102,241,.6); background: rgba(255,255,255,0.08); }
+.form-group input:focus { border-color: rgba(99,102,241,.6); background: rgba(255,255,255,.08); }
 .form-group input::placeholder { color: var(--text-3); }
-.error-msg { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); border-radius: var(--radius-sm); padding: 12px 16px; color: #fca5a5; font-size: 14px; margin-bottom: 16px; }
+.error-msg {
+  background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3);
+  border-radius: var(--r); padding: 11px 15px;
+  color: #fca5a5; font-size: 13px; margin-bottom: 13px;
+}
 
 /* ── Buttons ───────────────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   border: none; cursor: pointer;
   font-family: 'Figtree', sans-serif; font-weight: 600;
-  border-radius: var(--radius-sm);
+  border-radius: var(--r);
   transition: transform .15s, box-shadow .15s, opacity .15s;
   white-space: nowrap;
 }
 .btn:active { transform: scale(.97); }
 .btn-primary {
-  padding: 12px 22px; font-size: 14px;
+  padding: 12px 22px; font-size: 15px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #fff;
-  box-shadow: 0 6px 24px rgba(99,102,241,.3);
+  color: #fff; box-shadow: 0 6px 24px rgba(99,102,241,.4);
 }
-.btn-primary:hover { box-shadow: 0 10px 32px rgba(99,102,241,.45); transform: translateY(-1px); }
+.btn-primary:hover { box-shadow: 0 10px 32px rgba(99,102,241,.55); transform: translateY(-1px); }
 .btn-full { width: 100%; justify-content: center; margin-top: 8px; }
 .btn-ghost {
-  padding: 10px 18px; font-size: 14px;
-  background: var(--glass);
-  border: 1px solid var(--border);
+  padding: 9px 15px; font-size: 13px;
+  background: rgba(255,255,255,.07); border: 1px solid var(--border);
   color: var(--text-2);
 }
-.btn-ghost:hover { background: rgba(255,255,255,.1); color: var(--text); }
-.btn-sm { padding: 9px 16px; font-size: 13px; }
-.btn-danger { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.2); color: #fca5a5; }
+.btn-ghost:hover { background: rgba(255,255,255,.11); color: var(--text); }
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+.btn-danger { background: rgba(239,68,68,.13); border: 1px solid rgba(239,68,68,.25); color: #fca5a5; }
 .btn-danger:hover { background: rgba(239,68,68,.22); }
 .btn-icon {
   width: 32px; height: 32px; padding: 0;
-  justify-content: center;
-  background: rgba(255,255,255,.07);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.06); border: 1px solid var(--border);
+  color: var(--text-2); border-radius: var(--r); font-size: 13px; flex-shrink: 0;
 }
 .btn-icon:hover { background: rgba(255,255,255,.12); color: var(--text); }
 .btn-icon.copied { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.3); color: #86efac; }
-.btn-icon i { width: 16px; height: 16px; }
+.btn-icon svg { width: 14px; height: 14px; }
 
-/* ── Header ────────────────────────────────────────────────── */
-.vault-header {
+/* ── Search Bar ────────────────────────────────────────────── */
+.vault-search-bar {
   position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; gap: 16px;
-  padding: 12px 24px;
-  border-radius: 0;
-  border-top: none;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(11,11,24,.88);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  background: rgba(11, 11, 24, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
 }
-.header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.header-logo { width: 28px; height: 28px; object-fit: contain; }
-.header-title { font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
-.header-search { flex: 1; max-width: 400px; margin: 0 auto; }
-.header-search input {
+.search-wrap { flex: 1; position: relative; }
+.search-wrap svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; color: var(--text-3); pointer-events: none;
+}
+.search-wrap input {
   width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 9px 16px;
+  border-radius: var(--r); padding: 9px 13px 9px 34px;
   color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
   transition: border-color .2s, background .2s;
 }
-.header-search input:focus { border-color: rgba(99,102,241,.5); background: rgba(255,255,255,.09); }
-.header-search input::placeholder { color: var(--text-3); }
-.header-right { display: flex; gap: 10px; flex-shrink: 0; align-items: center; }
+.search-wrap input:focus { border-color: rgba(99,102,241,.5); background: rgba(255,255,255,.09); }
+.search-wrap input::placeholder { color: var(--text-3); }
+.btn-logout {
+  width: 36px; height: 36px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: var(--r);
+  background: rgba(255,255,255,.05); color: var(--text-2);
+  cursor: pointer; transition: background .2s, color .2s, border-color .2s;
+}
+.btn-logout:hover { background: rgba(239,68,68,.14); color: #fca5a5; border-color: rgba(239,68,68,.3); }
+.btn-logout svg { width: 15px; height: 15px; }
 
-/* Hide unused top filter tabs */
-.filter-tabs {
-  display: none !important;
-}
-
-/* ── Floating Action Button (FAB) ──────────────────────────── */
-.fab-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #fff;
-  border: none;
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 140;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.fab-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.6);
-}
-.fab-btn:active {
-  transform: scale(0.95);
-}
-.fab-btn i {
-  width: 24px;
-  height: 24px;
-  stroke-width: 2.5;
-}
-
-/* ── Mobile Tab Bar ────────────────────────────────────────── */
-.mobile-tab-bar {
-  display: none;
-}
-
-/* ── Dashboard (Desktop Categorized View) ──────────────────── */
-.vault-grid {
-  display: block;
-  padding: 24px 24px 80px;
-}
-.dashboard-desktop {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  width: 100%;
-}
-.dashboard-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.dashboard-section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* ── Desktop Section Tabs ─────────────────────────────────── */
+.section-tabs {
+  display: flex; gap: 2px;
+  padding: 10px 14px 0;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
+  background: rgba(11,11,24,.6);
 }
-.dashboard-section-title {
-  font-size: 16px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text);
+.section-tab {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 16px 10px;
+  border: none; border-radius: var(--r) var(--r) 0 0;
+  background: transparent; color: var(--text-2);
+  font-family: 'Figtree', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all .18s;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
 }
-.dashboard-section-title i {
-  width: 18px;
-  height: 18px;
-  color: var(--accent);
-}
-.dashboard-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-.dashboard-columns-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-@media (min-width: 768px) {
-  .dashboard-columns-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (min-width: 1100px) {
-  .dashboard-columns-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+.section-tab svg { width: 15px; height: 15px; }
+.section-tab:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.section-tab.active { color: var(--text); border-bottom-color: var(--accent); background: rgba(99,102,241,.07); }
+
+/* ── Main Content ──────────────────────────────────────────── */
+#vault-screen { min-height: 100vh; display: flex; flex-direction: column; }
+.vault-content {
+  flex: 1; position: relative; z-index: 1;
+  padding-bottom: calc(var(--tab-h) + 20px);
 }
 
-/* ── Compact Lists ─────────────────────────────────────────── */
-.compact-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: var(--glass-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px;
-  max-height: 380px;
-  overflow-y: auto;
+/* ── Cards Grid ────────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px; padding: 14px;
 }
-.compact-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
-}
-.compact-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--border);
-  transform: translateY(-1px);
-}
-.compact-item-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.compact-item-icon i {
-  width: 16px;
-  height: 16px;
-}
-.compact-item-info {
-  flex: 1;
-  min-width: 0;
-}
-.compact-item-title {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.compact-item-desc {
-  font-size: 11.5px;
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 2px;
-}
-.compact-item-date {
-  font-size: 10.5px;
-  color: var(--text-3);
-  margin-top: 1px;
-}
-.compact-empty {
-  padding: 24px;
-  text-align: center;
-  color: var(--text-3);
-  font-size: 13px;
-}
+@media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 16px; } }
+@media (min-width: 1100px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
 
-/* ── Item Cards (Bank Cards) ────────────────────────────────── */
+/* ── Items List (docs / passwords / notes) ─────────────────── */
+.items-list {
+  display: flex; flex-direction: column;
+  padding: 10px 10px; gap: 1px;
+}
+@media (min-width: 640px) { .items-list { padding: 12px 16px; max-width: 700px; } }
+
+.list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--r); cursor: pointer;
+  transition: background .15s;
+  animation: fadeUp .28s ease both;
+}
+.list-item:hover { background: rgba(255,255,255,.05); }
+.list-icon {
+  width: 36px; height: 36px; border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.list-icon svg { width: 17px; height: 17px; }
+.list-icon.type-document { background: rgba(59,130,246,.14); color: #60a5fa; }
+.list-icon.type-login    { background: rgba(99,102,241,.14); color: #a5b4fc; }
+.list-icon.type-note     { background: rgba(251,191,36,.11); color: #fbbf24; }
+.list-icon.type-card     { background: rgba(34,197,94,.11);  color: #86efac; }
+.list-body { flex: 1; min-width: 0; }
+.list-title { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-sub   { font-size: 12px; color: var(--text-2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-arrow { color: var(--text-3); flex-shrink: 0; }
+.list-arrow svg { width: 15px; height: 15px; }
+
+/* ── Empty State ───────────────────────────────────────────── */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px; gap: 10px; color: var(--text-3); text-align: center;
+}
+.empty-state svg { width: 44px; height: 44px; opacity: .3; margin-bottom: 6px; }
+.empty-state p { font-size: 15px; }
+
+/* ── Bank Card Thumbnail ───────────────────────────────────── */
 .item-card {
-  border-radius: var(--radius);
-  cursor: pointer;
+  border-radius: var(--r-lg); cursor: pointer;
   transition: transform .2s, box-shadow .2s;
-  animation: fadeUp .35s ease both;
-  overflow: hidden;
+  animation: fadeUp .3s ease both; overflow: hidden;
 }
-.item-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.5); }
-
-/* Bank Card */
+.item-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.5); }
 .bank-card-visual {
   width: 100%; aspect-ratio: 1.586;
-  border-radius: var(--radius);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  border-radius: var(--r-lg); padding: 16px;
+  position: relative; overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between;
 }
 .bank-card-visual::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.13) 0%, transparent 55%);
   pointer-events: none;
 }
-.card-chip { font-size: 24px; opacity: .9; display: flex; align-items: center; }
+.card-chip svg { width: 26px; height: 20px; }
 .card-number-display {
-  font-size: 16px; font-weight: 600; letter-spacing: 3px;
-  color: rgba(255,255,255,.85); font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 8px rgba(0,0,0,.4);
-  margin: 12px 0;
+  font-size: 13px; font-weight: 600; letter-spacing: 2.5px;
+  color: rgba(255,255,255,.88); font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 6px rgba(0,0,0,.4);
 }
-.card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-.card-holder { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.7); }
-.card-expiry-label { font-size: 8px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .8px; }
-.card-expiry-val { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); }
-.card-bank-name { font-size: 15px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: -.3px; }
+.card-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 4px; }
+.card-holder { font-size: 9px; text-transform: uppercase; letter-spacing: 1.3px; color: rgba(255,255,255,.7); }
+.card-expiry-val { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.85); margin-top: 1px; }
+.card-bank-name { font-size: 12px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: -.2px; text-align: right; max-width: 55%; word-break: break-all; }
 
-.empty-state {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 60px 24px; gap: 12px; color: var(--text-3);
-  text-align: center;
+/* ── FAB ───────────────────────────────────────────────────── */
+.fab {
+  position: fixed;
+  right: 18px; bottom: calc(var(--tab-h) + 14px);
+  width: 50px; height: 50px; border-radius: 13px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; border: none; cursor: pointer; z-index: 90;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 26px rgba(99,102,241,.5);
+  transition: transform .2s, box-shadow .2s;
 }
-.empty-state i { font-size: 32px; opacity: .5; }
-.empty-state p { font-size: 15px; }
+.fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 12px 34px rgba(99,102,241,.6); }
+.fab:active { transform: scale(.93); }
+.fab svg { width: 22px; height: 22px; }
+@media (min-width: 640px) { .fab { bottom: 22px; } }
 
-/* ── Modals ────────────────────────────────────────────────── */
+/* ── Mobile Tab Bar ────────────────────────────────────────── */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: var(--tab-h);
+  display: flex;
+  background: rgba(11,11,24,.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tab-bar-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  border: none; background: transparent; color: var(--text-3);
+  font-family: 'Figtree', sans-serif; font-size: 10px; font-weight: 500;
+  cursor: pointer; padding: 8px 2px;
+  transition: color .18s; -webkit-tap-highlight-color: transparent;
+}
+.tab-bar-item svg { width: 21px; height: 21px; }
+.tab-bar-item.active { color: var(--accent); }
+
+/* ── Full-Screen Modals ────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg);
   z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px;
-  animation: fadeIn .2s ease;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  animation: fadeIn .18s ease;
 }
-.modal {
-  width: 100%; max-width: 520px;
-  max-height: 90vh; overflow-y: auto;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,.1) transparent;
-  animation: scaleIn .25s ease;
-  background: rgba(20, 20, 35, 0.85);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-}
-.modal::-webkit-scrollbar { width: 4px; }
-.modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
-/* View Modal */
-.view-modal-content { padding: 28px; }
-.view-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
-.view-modal-header-info { display: flex; align-items: center; gap: 12px; }
-.view-modal-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.view-modal-title { font-size: 20px; font-weight: 800; color: var(--text); }
-.view-modal-subtitle { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-.view-modal-actions { display: flex; gap: 8px; flex-shrink: 0; }
+/* Modal Topbar */
+.modal-topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: rgba(11,11,24,.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.modal-topbar-title {
+  flex: 1; font-size: 16px; font-weight: 700;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.modal-topbar-actions { display: flex; gap: 6px; align-items: center; }
+.close-btn {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: var(--r);
+  background: rgba(255,255,255,.06); color: var(--text-2); cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.close-btn:hover { background: rgba(255,255,255,.12); color: var(--text); }
+.close-btn svg { width: 16px; height: 16px; }
+
+/* Modal Body */
+.modal-body {
+  max-width: 640px; margin: 0 auto;
+  padding: 18px 16px 48px;
+}
+@media (min-width: 640px) { .modal-body { padding: 24px 28px 56px; } }
+
+/* ── View Modal ────────────────────────────────────────────── */
 .bank-card-large {
-  width: 100%; aspect-ratio: 1.586;
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 24px;
+  width: 100%; max-width: 380px;
+  aspect-ratio: 1.586; border-radius: var(--r-lg);
+  padding: 22px 22px; margin-bottom: 18px;
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between;
 }
 .bank-card-large::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 55%);
 }
-.bank-card-large .card-chip { font-size: 32px; }
-.bank-card-large .card-number-display { font-size: 20px; letter-spacing: 4px; }
-.bank-card-large .card-bank-name { font-size: 20px; }
+.bank-card-large .card-chip svg { width: 32px; height: 26px; }
+.bank-card-large .card-number-display { font-size: 18px; letter-spacing: 3.5px; }
+.bank-card-large .card-bank-name { font-size: 16px; }
+.bank-card-large .card-holder { font-size: 10px; }
+.bank-card-large .card-expiry-val { font-size: 13px; }
 
-/* Field rows */
-.fields-list { display: flex; flex-direction: column; gap: 10px; }
+.fields-list { display: flex; flex-direction: column; gap: 7px; }
 .field-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: var(--r);
 }
 .field-info { flex: 1; min-width: 0; }
-.field-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 4px; }
-.field-value { font-size: 14px; color: var(--text); word-break: break-all; }
-.field-value.mono { font-family: 'SF Mono', 'Fira Code', monospace; letter-spacing: 1px; }
-.field-value.secret { letter-spacing: 2px; color: var(--text-2); }
-.modal-footer { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+.field-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 3px; }
+.field-value { font-size: 15px; color: var(--text); word-break: break-all; }
+.field-value.mono { font-family: 'SF Mono','Fira Code',monospace; letter-spacing: 1.5px; }
+.field-value.secret { letter-spacing: 3px; color: var(--text-2); }
+.modal-view-footer { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
+.view-modal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-/* Edit Modal */
-.edit-modal-content { padding: 28px; }
-.edit-modal-title { font-size: 20px; font-weight: 800; }
-.type-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+/* ── Edit Modal ────────────────────────────────────────────── */
+.type-tabs { display: flex; gap: 5px; margin-bottom: 18px; flex-wrap: wrap; }
 .type-tab {
-  padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: var(--r); border: 1px solid var(--border);
   background: var(--glass-2); color: var(--text-2);
   font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all .2s;
+  cursor: pointer; transition: all .18s;
 }
-.type-tab:hover { background: var(--glass); }
-.type-tab.active {
-  background: rgba(99,102,241,.2); border-color: rgba(99,102,241,.4); color: var(--text);
-}
-.edit-field { margin-bottom: 12px; }
-.edit-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 6px; }
+.type-tab svg { width: 13px; height: 13px; }
+.type-tab:hover { background: var(--glass); color: var(--text); }
+.type-tab.active { background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.4); color: var(--text); }
+
+.edit-field { margin-bottom: 13px; }
+.edit-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 7px; }
 .edit-field input, .edit-field select, .edit-field textarea {
-  width: 100%;
-  background: rgba(255,255,255,.05); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 10px 14px;
-  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
+  width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 11px 13px;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
   transition: border-color .2s, background .2s;
 }
 .edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
@@ -517,176 +409,51 @@ body {
 .edit-field input::placeholder, .edit-field textarea::placeholder { color: var(--text-3); }
 .edit-field select option { background: #1a1a2e; }
 .edit-field textarea { resize: vertical; min-height: 80px; }
-.edit-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+.edit-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.color-picker { display: flex; gap: 7px; flex-wrap: wrap; }
 .color-dot {
   width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform .15s, border-color .15s;
+  border: 2px solid transparent; transition: transform .15s, border-color .15s;
 }
-.color-dot:hover { transform: scale(1.1); }
-.color-dot.selected { border-color: rgba(255,255,255,.8); transform: scale(1.15); }
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.color-dot:hover { transform: scale(1.12); }
+.color-dot.selected { border-color: rgba(255,255,255,.85); transform: scale(1.18); }
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
 
 /* ── Animations ────────────────────────────────────────────── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
 }
-@keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(.96) translateY(8px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.stagger { animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.stagger { animation-delay: calc(var(--i, 0) * 45ms); }
 
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .vault-header {
-    flex-wrap: nowrap;
-    gap: 8px;
-    padding: 10px 14px;
-  }
-  .header-left {
-    display: none;
-  }
-  .header-search {
-    flex: 1;
-    max-width: none;
-    margin: 0;
-  }
-  .header-search input {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-  .header-right {
-    gap: 4px;
-  }
-  .header-right #logout-btn {
-    width: 34px;
-    height: 34px;
-  }
-
-  .vault-grid {
-    padding: 16px 14px 100px;
-  }
-  
-  /* Mobile Tab Bar */
-  .mobile-tab-bar {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: rgba(11, 11, 24, 0.85);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-top: 1px solid var(--border);
-    justify-content: space-around;
-    align-items: center;
-    z-index: 150;
-    padding-bottom: env(safe-area-inset-bottom);
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-  }
-  .mobile-tab {
-    background: none;
-    border: none;
-    color: var(--text-2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    font-family: 'Figtree', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    flex: 1;
-    height: 100%;
-    transition: color 0.2s;
-  }
-  .mobile-tab i {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2;
-  }
-  .mobile-tab.active {
-    color: var(--accent);
-  }
-
-  .fab-btn {
-    bottom: 76px;
-    right: 16px;
-    width: 50px;
-    height: 50px;
-  }
-  .fab-btn i {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Cards Grid on Mobile - Strict 2 Columns */
-  .dashboard-cards-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-  }
-  
-  .bank-card-visual { padding: 12px; }
-  .card-number-display { font-size: 12px; letter-spacing: 1.5px; margin: 8px 0; }
-  .card-chip { font-size: 18px; }
-  .card-holder { font-size: 8px; letter-spacing: 0.5px; }
-  .card-expiry-val { font-size: 9px; }
-  .card-bank-name { font-size: 10px !important; }
-  .card-footer { gap: 2px; }
-
-  /* Full Screen Modals on Mobile */
-  .modal-overlay {
-    padding: 0;
-  }
-  .modal {
-    max-width: 100%;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    border: none;
-    background: var(--bg);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    display: flex;
-    flex-direction: column;
-  }
-  .view-modal-content {
-    padding: 20px !important;
-    flex: 1;
-  }
-  .edit-modal-content {
-    padding: 20px !important;
-    flex: 1;
-  }
+@media (min-width: 640px) {
+  .tab-bar { display: none; }
+  .section-tabs { display: flex; }
+  .vault-content { padding-bottom: 40px; }
+  .fab { right: 24px; }
+}
+@media (max-width: 639px) {
+  .section-tabs { display: none; }
+  .vault-content { padding-bottom: calc(var(--tab-h) + 20px); }
 }
 </style>
 </head>
 <body>
 
-<!-- Background Orbs -->
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="bg-orb orb3"></div>
 
 <!-- ══ Login Screen ══════════════════════════════════════════ -->
 <div id="login-screen" class="screen hidden">
-  <div class="login-card glass">
+  <div class="login-card">
     <img src="logo.png" alt="Vault Logo" class="login-logo">
     <h1>Vault</h1>
     <p class="sub">Личное зашифрованное хранилище</p>
-
     <div id="login-error" class="error-msg hidden"></div>
-
     <div class="form-group">
       <label>Логин</label>
       <input type="text" id="login-username" autocomplete="username" placeholder="ваш логин">
@@ -702,138 +469,178 @@ body {
 <!-- ══ Vault Screen ══════════════════════════════════════════ -->
 <div id="vault-screen" class="screen hidden">
 
-  <header class="vault-header">
-    <div class="header-left">
-      <img src="logo.png" alt="Logo" class="header-logo">
-      <span class="header-title">Vault</span>
-    </div>
-    <div class="header-search">
+  <!-- Search bar -->
+  <div class="vault-search-bar">
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input type="search" id="search-input" placeholder="Поиск..." autocomplete="off">
     </div>
-    <div class="header-right">
-      <button class="btn btn-ghost btn-sm btn-icon" id="logout-btn" title="Выйти"><i data-lucide="log-out"></i></button>
-    </div>
-  </header>
-
-  <div class="filter-tabs" id="filter-tabs">
-    <button class="tab active" data-filter="all">Все</button>
-    <button class="tab" data-filter="card">Карты</button>
-    <button class="tab" data-filter="document">Документы</button>
-    <button class="tab" data-filter="login">Пароли</button>
-    <button class="tab" data-filter="note">Заметки</button>
+    <button class="btn-logout" id="logout-btn" title="Выйти">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+    </button>
   </div>
 
-  <main class="vault-grid" id="vault-grid"></main>
+  <!-- Desktop Section Tabs -->
+  <div class="section-tabs" id="section-tabs">
+    <button class="section-tab active" data-filter="card">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      Карты
+    </button>
+    <button class="section-tab" data-filter="document">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      Документы
+    </button>
+    <button class="section-tab" data-filter="login">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+      Пароли
+    </button>
+    <button class="section-tab" data-filter="note">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>
+      Заметки
+    </button>
+  </div>
 
-  <!-- Floating Action Button (FAB) -->
-  <button class="fab-btn" id="fab-add-btn" title="Добавить запись">
-    <i data-lucide="plus"></i>
+  <!-- Content Grid/List -->
+  <main class="vault-content" id="vault-grid"></main>
+
+  <!-- Floating Action Button -->
+  <button class="fab" id="add-btn" title="Добавить">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
   </button>
 
-  <!-- Mobile Bottom Tab Bar -->
-  <nav class="mobile-tab-bar">
-    <button class="mobile-tab active" data-filter="all">
-      <i data-lucide="layers"></i>
-      <span>Все</span>
-    </button>
-    <button class="mobile-tab" data-filter="card">
-      <i data-lucide="credit-card"></i>
+  <!-- Mobile Tab Bar -->
+  <nav class="tab-bar" id="tab-bar">
+    <button class="tab-bar-item active" data-filter="card" id="tbi-card">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
       <span>Карты</span>
     </button>
-    <button class="mobile-tab" data-filter="login">
-      <i data-lucide="key"></i>
+    <button class="tab-bar-item" data-filter="document" id="tbi-document">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      <span>Документы</span>
+    </button>
+    <button class="tab-bar-item" data-filter="login" id="tbi-login">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
       <span>Пароли</span>
     </button>
-    <button class="mobile-tab" data-filter="document">
-      <i data-lucide="file-text"></i>
-      <span>Доки</span>
-    </button>
-    <button class="mobile-tab" data-filter="note">
-      <i data-lucide="sticky-note"></i>
+    <button class="tab-bar-item" data-filter="note" id="tbi-note">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>
       <span>Заметки</span>
     </button>
   </nav>
 </div>
 
-<!-- ══ View Modal ════════════════════════════════════════════ -->
+<!-- ══ View Modal (full-screen) ════════════════════════════ -->
 <div class="modal-overlay hidden" id="view-overlay">
-  <div class="modal" id="view-modal">
-    <div class="view-modal-content" id="view-modal-content"></div>
+  <div class="modal-topbar">
+    <button class="close-btn" id="view-close-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <span class="modal-topbar-title" id="view-modal-topbar-title"></span>
+    <div class="modal-topbar-actions">
+      <button class="btn btn-ghost btn-sm" id="view-edit-btn">Изменить</button>
+      <button class="btn btn-danger btn-sm" id="view-delete-btn">Удалить</button>
+    </div>
   </div>
+  <div class="modal-body" id="view-modal-content"></div>
 </div>
 
-<!-- ══ Edit Modal ════════════════════════════════════════════ -->
+<!-- ══ Edit Modal (full-screen) ════════════════════════════ -->
 <div class="modal-overlay hidden" id="edit-overlay">
-  <div class="modal">
-    <div class="edit-modal-content">
-      <div class="edit-modal-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
-        <h2 class="edit-modal-title" id="edit-modal-title" style="margin-bottom:0;">Добавить запись</h2>
-        <button class="btn btn-icon" id="edit-close-btn" title="Закрыть">
-          <i data-lucide="x"></i>
-        </button>
-      </div>
-
-      <div class="type-tabs" id="type-tabs">
-        <button class="type-tab active" data-type="card"><i data-lucide="credit-card"></i> <span>Карта</span></button>
-        <button class="type-tab" data-type="document"><i data-lucide="file-text"></i> <span>Документ</span></button>
-        <button class="type-tab" data-type="login"><i data-lucide="key"></i> <span>Пароль</span></button>
-        <button class="type-tab" data-type="note"><i data-lucide="sticky-note"></i> <span>Заметка</span></button>
-      </div>
-
-      <div class="edit-field">
-        <label>Название <span style="color:var(--danger)">*</span></label>
-        <input type="text" id="ef-title" placeholder="Как называть эту запись">
-      </div>
-
-      <div id="dynamic-fields"></div>
-
-      <div id="edit-error" class="error-msg hidden" style="margin-top:12px;margin-bottom:0"></div>
-
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="edit-cancel-btn">Отмена</button>
-        <button class="btn btn-primary" id="edit-save-btn">Сохранить</button>
-      </div>
+  <div class="modal-topbar">
+    <button class="close-btn" id="edit-cancel-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <h2 class="modal-topbar-title" id="edit-modal-title">Добавить</h2>
+    <button class="btn btn-primary btn-sm" id="edit-save-btn">Сохранить</button>
+  </div>
+  <div class="modal-body" id="edit-modal-body">
+    <div class="type-tabs" id="type-tabs">
+      <button class="type-tab active" data-type="card">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        Карта
+      </button>
+      <button class="type-tab" data-type="document">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+        Документ
+      </button>
+      <button class="type-tab" data-type="login">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+        Пароль
+      </button>
+      <button class="type-tab" data-type="note">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>
+        Заметка
+      </button>
     </div>
+
+    <div class="edit-field">
+      <label>Название <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="ef-title" placeholder="Как называть эту запись">
+    </div>
+
+    <div id="dynamic-fields"></div>
+    <div id="edit-error" class="error-msg hidden" style="margin-top:12px;margin-bottom:0"></div>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════════════
+//  SVG Icon Helper
+// ══════════════════════════════════════════════════════════════
+const ICONS = {
+  'credit-card': '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+  'file-text':   '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  'key':         '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+  'note':        '<path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/>',
+  'eye':         '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  'eye-off':     '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>',
+  'copy':        '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  'check':       '<path d="M20 6 9 17l-5-5"/>',
+  'chevron-r':   '<path d="m9 18 6-6-6-6"/>',
+  'chip':        '<rect x="3" y="4" width="18" height="16" rx="3" fill="rgba(255,215,0,.85)" stroke="rgba(180,140,0,.4)" stroke-width="1"/><rect x="3" y="10" width="18" height="4" fill="rgba(160,120,0,.3)"/><rect x="8" y="4" width="2.5" height="16" fill="rgba(160,120,0,.2)"/><rect x="13.5" y="4" width="2.5" height="16" fill="rgba(160,120,0,.2)"/>',
+};
+
+function icon(name, w=24, h=24) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;
+}
+function iconFill(name, w=24, h=24) {
+  // For chip - no stroke needed
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 24 24">${ICONS[name]||''}</svg>`;
+}
+
+// ══════════════════════════════════════════════════════════════
 //  State
 // ══════════════════════════════════════════════════════════════
 const S = {
-  items:       [],
-  filter:      'all',
-  search:      '',
-  editType:    'card',
-  editId:      null,   // null = add, number = edit
+  items:    [],
+  filter:   'card',
+  search:   '',
+  editType: 'card',
+  editId:   null,
 };
 
 // ── Card color presets ─────────────────────────────────────
 const CARD_COLORS = [
   { id:'midnight', g:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)' },
-  { id:'indigo',   g:'linear-gradient(135deg,#4f46e5,#7c3aed)' },
+  { id:'indigo',   g:'linear-gradient(135deg,#4338ca,#7c3aed)' },
   { id:'rose',     g:'linear-gradient(135deg,#be185d,#f43f5e)' },
-  { id:'ocean',    g:'linear-gradient(135deg,#0369a1,#06b6d4)' },
-  { id:'emerald',  g:'linear-gradient(135deg,#065f46,#10b981)' },
+  { id:'ocean',    g:'linear-gradient(135deg,#0369a1,#0891b2)' },
+  { id:'emerald',  g:'linear-gradient(135deg,#065f46,#059669)' },
   { id:'gold',     g:'linear-gradient(135deg,#92400e,#d97706)' },
   { id:'carbon',   g:'linear-gradient(135deg,#18181b,#3f3f46)' },
   { id:'aurora',   g:'linear-gradient(135deg,#4a044e,#7e22ce,#1e3a5f)' },
-  { id:'sunset',   g:'linear-gradient(135deg,#f97316,#ec4899)' },
-  { id:'mint',     g:'linear-gradient(135deg,#0d9488,#0ea5e9)' },
-  { id:'amethyst', g:'linear-gradient(135deg,#6b21a8,#a855f7)' },
-  { id:'cyberpunk',g:'linear-gradient(135deg,#f43f5e,#06b6d4)' }
+  { id:'sunset',   g:'linear-gradient(135deg,#7c2d12,#ea580c,#fbbf24)' },
+  { id:'arctic',   g:'linear-gradient(135deg,#0c4a6e,#0284c7,#38bdf8)' },
+  { id:'cherry',   g:'linear-gradient(135deg,#881337,#e11d48,#fb7185)' },
+  { id:'forest',   g:'linear-gradient(135deg,#14532d,#16a34a)' },
+  { id:'space',    g:'linear-gradient(135deg,#0f0f23,#1e1b4b,#312e81)' },
+  { id:'copper',   g:'linear-gradient(135deg,#78350f,#b45309,#fcd34d)' },
+  { id:'violet',   g:'linear-gradient(135deg,#3b0764,#7c3aed,#a855f7)' },
+  { id:'slate',    g:'linear-gradient(135deg,#0f172a,#334155,#64748b)' },
 ];
 let selectedColor = CARD_COLORS[0].id;
 
 const DOC_TYPES = ['Паспорт','ID карта','Водительские права','Загранпаспорт','Медицинский полис','ИНН','Другое'];
-
-// ── Lucide Icon Refresh Helper ─────────────────────────────
-function refreshIcons() {
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  }
-}
 
 // ══════════════════════════════════════════════════════════════
 //  API
@@ -860,16 +667,12 @@ async function doLogin() {
   const password = document.getElementById('login-password').value;
   const errEl = document.getElementById('login-error');
   errEl.classList.add('hidden');
-
   if (!username || !password) { errEl.textContent='Заполни оба поля'; errEl.classList.remove('hidden'); return; }
-
   const btn = document.getElementById('login-btn');
   btn.textContent = 'Вход...'; btn.disabled = true;
-
   const r = await api('login','POST',{username,password});
   btn.textContent = 'Войти'; btn.disabled = false;
-
-  if (r.ok) { showVault(); }
+  if (r.ok) showVault();
   else { errEl.textContent = r.error || 'Ошибка'; errEl.classList.remove('hidden'); }
 }
 
@@ -895,32 +698,19 @@ async function loadItemDetail(id) {
 async function saveItem() {
   const errEl = document.getElementById('edit-error');
   errEl.classList.add('hidden');
-
   const title = document.getElementById('ef-title').value.trim();
   if (!title) { errEl.textContent='Введи название'; errEl.classList.remove('hidden'); return; }
-
   const type  = S.editType;
   const data  = collectFormData(type);
   const color = (type === 'card') ? selectedColor : null;
-
-  const btn = document.getElementById('edit-save-btn');
-  btn.textContent = 'Сохранение...'; btn.disabled = true;
-
+  const btn   = document.getElementById('edit-save-btn');
+  btn.textContent = '...'; btn.disabled = true;
   let r;
-  if (S.editId) {
-    r = await api('item','PUT',{type,title,data,color},S.editId);
-  } else {
-    r = await api('items','POST',{type,title,data,color});
-  }
+  if (S.editId) r = await api('item','PUT',{type,title,data,color},S.editId);
+  else          r = await api('items','POST',{type,title,data,color});
   btn.textContent = 'Сохранить'; btn.disabled = false;
-
-  if (r.ok) {
-    closeEdit();
-    await loadItems();
-  } else {
-    errEl.textContent = r.error || 'Ошибка сохранения';
-    errEl.classList.remove('hidden');
-  }
+  if (r.ok) { closeEdit(); await loadItems(); }
+  else { errEl.textContent = r.error || 'Ошибка сохранения'; errEl.classList.remove('hidden'); }
 }
 
 async function deleteItem(id) {
@@ -938,7 +728,6 @@ function showLogin() {
   document.getElementById('vault-screen').classList.add('hidden');
   document.getElementById('login-username').focus();
 }
-
 async function showVault() {
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('vault-screen').classList.remove('hidden');
@@ -946,277 +735,81 @@ async function showVault() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  Grid & Dashboard Rendering
+//  Tab Switching
+// ══════════════════════════════════════════════════════════════
+function setFilter(f) {
+  S.filter = f;
+  // Mobile tab bar
+  document.querySelectorAll('.tab-bar-item').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  // Desktop tabs
+  document.querySelectorAll('.section-tab').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderGrid();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Grid / List Rendering
 // ══════════════════════════════════════════════════════════════
 function renderGrid() {
   const grid = document.getElementById('vault-grid');
-  let items = S.items;
-
-  // Apply search
+  let items = S.items.filter(i => i.type === S.filter);
   if (S.search) {
     const q = S.search.toLowerCase();
-    items = items.filter(i => {
-      const matchTitle = i.title.toLowerCase().includes(q);
-      const d = i.data || {};
-      const matchData = Object.values(d).some(val => String(val).toLowerCase().includes(q));
-      return matchTitle || matchData;
-    });
+    items = items.filter(i => i.title.toLowerCase().includes(q));
   }
 
-  const isMobile = window.innerWidth <= 600;
+  if (!items.length) {
+    const emptyIcons = { card:'credit-card', document:'file-text', login:'key', note:'note' };
+    grid.innerHTML = `<div class="empty-state">${icon(emptyIcons[S.filter]||'note',44,44)}<p>Нет записей. Нажми&nbsp;+&nbsp;чтобы добавить!</p></div>`;
+    return;
+  }
 
-  if (isMobile) {
-    let filtered = items;
-    if (S.filter !== 'all') {
-      filtered = items.filter(i => i.type === S.filter);
-    }
-
-    if (S.filter === 'all') {
-      const cards = filtered.filter(i => i.type === 'card');
-      const logins = filtered.filter(i => i.type === 'login');
-      const docs = filtered.filter(i => i.type === 'document');
-      const notes = filtered.filter(i => i.type === 'note');
-
-      if (!filtered.length) {
-        grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>Ничего не найдено. Добавьте первую запись!</p></div>`;
-        refreshIcons();
-        return;
-      }
-
-      let html = `<div class="dashboard-desktop">`;
-      
-      if (cards.length) {
-        html += `
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="credit-card"></i> Карты</div>
-          </div>
-          <div class="dashboard-cards-grid">
-            ${cards.map((item, idx) => renderItemCard(item, idx)).join('')}
-          </div>
-        </div>`;
-      }
-      
-      if (logins.length) {
-        html += `
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="key"></i> Пароли</div>
-          </div>
-          <div class="compact-list">
-            ${logins.map((item, idx) => renderCompactItem(item, idx)).join('')}
-          </div>
-        </div>`;
-      }
-      
-      if (docs.length) {
-        html += `
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="file-text"></i> Документы</div>
-          </div>
-          <div class="compact-list">
-            ${docs.map((item, idx) => renderCompactItem(item, idx)).join('')}
-          </div>
-        </div>`;
-      }
-      
-      if (notes.length) {
-        html += `
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="sticky-note"></i> Заметки</div>
-          </div>
-          <div class="compact-list">
-            ${notes.map((item, idx) => renderCompactItem(item, idx)).join('')}
-          </div>
-        </div>`;
-      }
-      
-      html += `</div>`;
-      grid.innerHTML = html;
-    } else {
-      if (!filtered.length) {
-        grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>В этом разделе пока ничего нет</p></div>`;
-        refreshIcons();
-        return;
-      }
-
-      if (S.filter === 'card') {
-        grid.innerHTML = `<div class="dashboard-cards-grid">${filtered.map((item, idx) => renderItemCard(item, idx)).join('')}</div>`;
-      } else {
-        grid.innerHTML = `<div class="compact-list">${filtered.map((item, idx) => renderCompactItem(item, idx)).join('')}</div>`;
-      }
-    }
+  if (S.filter === 'card') {
+    grid.innerHTML = `<div class="cards-grid">${items.map((it,i) => renderBankCard(it,i)).join('')}</div>`;
   } else {
-    // Desktop Dashboard View (Grouped by sections)
-    const cards = items.filter(i => i.type === 'card');
-    const logins = items.filter(i => i.type === 'login');
-    const docs = items.filter(i => i.type === 'document');
-    const notes = items.filter(i => i.type === 'note');
-
-    if (!items.length) {
-      grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>Ничего не найдено. Нажмите кнопку «+» внизу справа!</p></div>`;
-      refreshIcons();
-      return;
-    }
-
-    let html = `
-    <div class="dashboard-desktop">
-      <div class="dashboard-section">
-        <div class="dashboard-section-header">
-          <div class="dashboard-section-title"><i data-lucide="credit-card"></i> Банковские карты</div>
-        </div>
-        <div class="dashboard-cards-grid">
-          ${cards.length ? cards.map((item, idx) => renderItemCard(item, idx)).join('') : `<div class="compact-empty">Карты не добавлены</div>`}
-        </div>
-      </div>
-      
-      <div class="dashboard-columns-grid">
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="key"></i> Пароли и логины</div>
-          </div>
-          <div class="compact-list">
-            ${logins.length ? logins.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Пароли не добавлены</div>`}
-          </div>
-        </div>
-
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="file-text"></i> Документы</div>
-          </div>
-          <div class="compact-list">
-            ${docs.length ? docs.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Документы не добавлены</div>`}
-          </div>
-        </div>
-
-        <div class="dashboard-section">
-          <div class="dashboard-section-header">
-            <div class="dashboard-section-title"><i data-lucide="sticky-note"></i> Заметки</div>
-          </div>
-          <div class="compact-list">
-            ${notes.length ? notes.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Заметки не добавлены</div>`}
-          </div>
-        </div>
-      </div>
-    </div>`;
-    
-    grid.innerHTML = html;
+    grid.innerHTML = `<div class="items-list">${items.map((it,i) => renderListItem(it,i)).join('')}</div>`;
   }
 
-  // Click wiring
-  grid.querySelectorAll('.item-card, .compact-item').forEach(el => {
+  grid.querySelectorAll('[data-id]').forEach(el => {
     el.addEventListener('click', () => openView(+el.dataset.id));
   });
-
-  refreshIcons();
 }
 
-function renderItemCard(item, idx) {
-  const style = `--i:${idx}`;
-  if (item.type === 'card') return renderBankCardThumb(item, style);
-  return renderGenericCard(item, style); // backup
-}
-
-function renderBankCardThumb(item, style) {
+function renderBankCard(item, idx) {
   const col = CARD_COLORS.find(c => c.id === item.color) || CARD_COLORS[0];
-  const preview = item.preview || {};
-  const d = item.data || {};
-  const bank = preview.bank || d.bank || '';
-  const expiry = preview.expiry || d.expiry || '';
-  let cardNum = preview.last4 || d.card_number || '•••• •••• •••• ••••';
-  if (cardNum && cardNum.length === 16) {
-    cardNum = '•••• •••• •••• ' + cardNum.slice(-4);
-  } else if (cardNum && cardNum.length > 4 && !cardNum.includes(' ')) {
-    cardNum = cardNum.replace(/(.{4})/g, '$1 ').trim();
-  }
-
+  const p   = item.preview || {};
+  const masked = p.last4 || '•••• •••• •••• ••••';
   return `
-  <div class="item-card stagger" data-id="${item.id}" style="${style}">
+  <div class="item-card stagger" data-id="${item.id}" style="--i:${idx}">
     <div class="bank-card-visual" style="background:${col.g}">
-      <div class="card-chip"><i data-lucide="credit-card" style="width:20px; height:20px; color:rgba(255,255,255,0.85);"></i></div>
-      <div class="card-number-display">${cardNum}</div>
+      <div class="card-chip">${iconFill('chip',26,20)}</div>
+      <div class="card-number-display">${masked}</div>
       <div class="card-footer">
         <div>
           <div class="card-holder">${esc(item.title)}</div>
-          <div class="card-expiry-val" style="font-size:10px;margin-top:2px;opacity:.7">${esc(expiry)}</div>
+          <div class="card-expiry-val">${esc(p.expiry||'')}</div>
         </div>
-        <div class="card-bank-name" style="font-size:13px;opacity:.9;text-align:right;max-width:60%">${esc(bank)}</div>
+        <div class="card-bank-name">${esc(p.bank||'')}</div>
       </div>
     </div>
   </div>`;
 }
 
-function renderGenericCard(item, style) {
-  // Backup card for Notes/Logins if ever rendered in cards layout
-  const icons = { document:'file-text', login:'key', note:'sticky-note' };
-  const labels = { document:'Документ', login:'Логин / Пароль', note:'Заметка' };
-  const date = new Date(item.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
+function renderListItem(item, idx) {
+  const typeIcon = { document:'file-text', login:'key', note:'note' };
+  const subtitles = {
+    document: item.preview?.doc_type || 'Документ',
+    login:    item.preview?.username || item.preview?.url || 'Пароль',
+    note:     item.preview?.snippet  || 'Заметка',
+  };
   return `
-  <div class="item-card glass stagger" data-id="${item.id}" style="${style}">
-    <div class="doc-card" style="padding: 14px 16px; display:flex; flex-direction:column; gap:10px;">
-      <div class="doc-card-head" style="display:flex; align-items:center; gap:10px;">
-        <div class="doc-icon type-${item.type}" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(255,255,255,0.08);"><i data-lucide="${icons[item.type]||'sticky-note'}" style="width:18px;height:18px;"></i></div>
-        <div>
-          <div class="doc-card-title" style="font-size:14px; font-weight:600;">${esc(item.title)}</div>
-          <div class="doc-card-type" style="font-size:11px; color:var(--text-2); margin-top:1px;">${labels[item.type]||item.type}</div>
-        </div>
-      </div>
-      <div class="doc-card-date" style="font-size:10px; color:var(--text-3); margin-top:2px;">Добавлено ${date}</div>
+  <div class="list-item stagger" data-id="${item.id}" style="--i:${idx}">
+    <div class="list-icon type-${item.type}">${icon(typeIcon[item.type]||'note',18,18)}</div>
+    <div class="list-body">
+      <div class="list-title">${esc(item.title)}</div>
+      <div class="list-sub">${esc(subtitles[item.type]||'')}</div>
     </div>
+    <div class="list-arrow">${icon('chevron-r',16,16)}</div>
   </div>`;
-}
-
-function renderCompactItem(item, idx) {
-  const style = `--i:${idx}`;
-  const date = new Date(item.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
-  
-  if (item.type === 'login') {
-    const p = item.data || {};
-    const iconStyle = 'background: rgba(99, 102, 241, 0.12); color: var(--accent);';
-    return `
-    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
-      <div class="compact-item-icon" style="${iconStyle}">
-        <i data-lucide="key"></i>
-      </div>
-      <div class="compact-item-info">
-        <div class="compact-item-title">${esc(item.title)}</div>
-        <div class="compact-item-desc">${esc(p.username || p.url || 'Нет логина')}</div>
-        <div class="compact-item-date">Добавлено ${date}</div>
-      </div>
-    </div>`;
-  } else if (item.type === 'document') {
-    const p = item.data || {};
-    const iconStyle = 'background: rgba(59, 130, 246, 0.12); color: #3b82f6;';
-    return `
-    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
-      <div class="compact-item-icon" style="${iconStyle}">
-        <i data-lucide="file-text"></i>
-      </div>
-      <div class="compact-item-info">
-        <div class="compact-item-title">${esc(item.title)}</div>
-        <div class="compact-item-desc">${esc(p.doc_type || 'Документ')}</div>
-        <div class="compact-item-date">Добавлено ${date}</div>
-      </div>
-    </div>`;
-  } else {
-    // note
-    const p = item.data || {};
-    const textSnippet = p.content || 'Заметка';
-    const iconStyle = 'background: rgba(251, 191, 36, 0.12); color: #fbbf24;';
-    return `
-    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
-      <div class="compact-item-icon" style="${iconStyle}">
-        <i data-lucide="sticky-note"></i>
-      </div>
-      <div class="compact-item-info">
-        <div class="compact-item-title">${esc(item.title)}</div>
-        <div class="compact-item-desc">${esc(textSnippet.length > 45 ? textSnippet.slice(0, 45) + '...' : textSnippet)}</div>
-        <div class="compact-item-date">Добавлено ${date}</div>
-      </div>
-    </div>`;
-  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1226,96 +819,91 @@ async function openView(id) {
   const item = await loadItemDetail(id);
   if (!item) return;
   const overlay = document.getElementById('view-overlay');
+  document.getElementById('view-modal-topbar-title').textContent = item.title;
   document.getElementById('view-modal-content').innerHTML = buildViewContent(item);
   overlay.classList.remove('hidden');
+  overlay.scrollTop = 0;
 
-  // Wire edit/delete
-  overlay.querySelector('#view-edit-btn')?.addEventListener('click', () => { closeView(); openEdit(item); });
-  overlay.querySelector('#view-delete-btn')?.addEventListener('click', () => deleteItem(item.id));
-  overlay.querySelector('#view-close-btn')?.addEventListener('click', closeView);
+  document.getElementById('view-edit-btn').onclick   = () => { closeView(); openEdit(item); };
+  document.getElementById('view-delete-btn').onclick = () => deleteItem(item.id);
+  document.getElementById('view-close-btn').onclick  = closeView;
 
-  // Wire copy buttons
   overlay.querySelectorAll('.copy-field-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      copyText(btn.dataset.value, btn);
-    });
+    btn.addEventListener('click', e => { e.stopPropagation(); copyText(btn.dataset.value, btn); });
   });
-
-  refreshIcons();
 }
 
 function buildViewContent(item) {
-  const labels = { card:'Банковская карта', document:'Документ', login:'Пароль / Логин', note:'Заметка' };
-  const d = item.data || {};
+  const d   = item.data || {};
   const col = CARD_COLORS.find(c => c.id === item.color);
-  const colorDot = col ? `<div class="view-modal-dot" style="background:${col.g}"></div>` : '';
-
+  const typeLabels = { card:'Банковская карта', document:'Документ', login:'Пароль / Логин', note:'Заметка' };
   let body = '';
 
   if (item.type === 'card') {
     const num = (d.card_number || '').replace(/(.{4})/g, '$1 ').trim();
-    body += `
-    <div class="fields-list">
-      ${fieldRow('Банк / Название', d.bank||item.title, false)}
-      ${fieldRow('Номер карты', num, true, true)}
-      ${fieldRow('Владелец', d.cardholder||'')}
-      ${fieldRow('Срок', d.expiry||'')}
-      ${fieldRow('CVV', d.cvv||'', false, false, true)}
-      ${d.notes ? fieldRow('Заметка', d.notes) : ''}
-    </div>`;
-  } else if (item.type === 'document') {
-    body += `<div class="fields-list">
-      ${fieldRow('Тип документа', d.doc_type||'')}
-      ${fieldRow('Номер', d.doc_number||'', true)}
-      ${d.name      ? fieldRow('Имя', d.name) : ''}
-      ${d.issued_by ? fieldRow('Кем выдан', d.issued_by) : ''}
-      ${d.issue_date? fieldRow('Дата выдачи', d.issue_date) : ''}
-      ${d.expiry    ? fieldRow('Срок действия', d.expiry) : ''}
-      ${d.notes     ? fieldRow('Заметка', d.notes) : ''}
-    </div>`;
-  } else if (item.type === 'login') {
-    body += `<div class="fields-list">
-      ${d.url      ? fieldRow('Сайт', d.url, true) : ''}
-      ${fieldRow('Логин / Email', d.username||'', true)}
-      ${fieldRow('Пароль', d.password||'', true, false, true)}
-      ${d.notes    ? fieldRow('Заметка', d.notes) : ''}
-    </div>`;
-  } else {
-    body += `<div class="fields-list">
-      ${fieldRow('Содержимое', d.content||'')}
-    </div>`;
-  }
-
-  return `
-  <div class="view-modal-header">
-    <div class="view-modal-header-info">
-      ${colorDot}
-      <div>
-        <div class="view-modal-title">${esc(item.title)}</div>
-        <div class="view-modal-subtitle">${labels[item.type]||item.type}</div>
+    const cardStyle = col ? `background:${col.g}` : 'background:linear-gradient(135deg,#1a1a2e,#0f3460)';
+    body = `
+    <div class="bank-card-large" style="${cardStyle}">
+      <div class="card-chip">${iconFill('chip',32,26)}</div>
+      <div class="card-number-display">${num || '•••• •••• •••• ••••'}</div>
+      <div class="card-footer">
+        <div>
+          <div class="card-holder">${esc(d.cardholder||'')}</div>
+          <div class="card-expiry-val">${esc(d.expiry||'')}</div>
+        </div>
+        <div class="card-bank-name">${esc(d.bank||item.title)}</div>
       </div>
     </div>
-    <button class="btn btn-icon" id="view-close-btn" title="Закрыть"><i data-lucide="x"></i></button>
-  </div>
-  ${body}
-  <div class="modal-footer">
-    <button class="btn btn-danger btn-sm" id="view-delete-btn"><i data-lucide="trash-2"></i> Удалить</button>
-    <button class="btn btn-ghost btn-sm" id="view-edit-btn"><i data-lucide="pencil"></i> Изменить</button>
-  </div>`;
+    <div class="fields-list">
+      ${fieldRow('Банк',d.bank||item.title)}
+      ${fieldRow('Номер карты',num,true,true)}
+      ${fieldRow('Владелец',d.cardholder||'')}
+      ${fieldRow('Срок',d.expiry||'')}
+      ${fieldRow('CVV',d.cvv||'',false,false,true)}
+      ${d.notes ? fieldRow('Заметка',d.notes) : ''}
+    </div>`;
+  } else if (item.type === 'document') {
+    body = `<div class="fields-list">
+      ${fieldRow('Тип',d.doc_type||'')}
+      ${fieldRow('Номер',d.doc_number||'',true)}
+      ${d.name       ? fieldRow('Имя',d.name) : ''}
+      ${d.issued_by  ? fieldRow('Кем выдан',d.issued_by) : ''}
+      ${d.issue_date ? fieldRow('Дата выдачи',d.issue_date) : ''}
+      ${d.expiry     ? fieldRow('Срок действия',d.expiry) : ''}
+      ${d.notes      ? fieldRow('Заметка',d.notes) : ''}
+    </div>`;
+  } else if (item.type === 'login') {
+    body = `<div class="fields-list">
+      ${d.url      ? fieldRow('Сайт',d.url,true) : ''}
+      ${fieldRow('Логин / Email',d.username||'',true)}
+      ${fieldRow('Пароль',d.password||'',true,false,true)}
+      ${d.notes    ? fieldRow('Заметка',d.notes) : ''}
+    </div>`;
+  } else {
+    body = `<div class="fields-list">${fieldRow('Содержимое',d.content||'')}</div>`;
+  }
+
+  return body;
 }
 
 function fieldRow(label, value, copyable=false, mono=false, secret=false) {
   if (!value) return '';
   const cls = mono ? 'mono' : secret ? 'secret' : '';
   const display = secret ? '••••••••' : esc(value);
-  const showToggle = secret ? `<button class="btn btn-icon toggle-secret-btn" onclick="toggleSecret(this,'${esc(value).replace(/'/g,"\\'")}')" title="Показать"><i data-lucide="eye"></i></button>` : '';
-  const copyBtn = copyable || secret ? `<button class="btn btn-icon copy-field-btn" data-value="${esc(value)}" title="Копировать"><i data-lucide="copy"></i></button>` : '';
+  const uid = Math.random().toString(36).slice(2);
+  const showToggle = secret
+    ? `<button class="btn-icon" onclick="toggleSecret(this,'${esc(value).replace(/'/g,"\\'")}')">
+        ${icon('eye',14,14)}
+       </button>` : '';
+  const copyBtn = (copyable || secret)
+    ? `<button class="btn-icon copy-field-btn" data-value="${esc(value)}" title="Копировать">
+        ${icon('copy',14,14)}
+       </button>` : '';
   return `
   <div class="field-row">
     <div class="field-info">
       <div class="field-label">${esc(label)}</div>
-      <div class="field-value ${cls}" id="fv-${Math.random().toString(36).slice(2)}">${display}</div>
+      <div class="field-value ${cls}" id="fv-${uid}">${display}</div>
     </div>
     ${showToggle}${copyBtn}
   </div>`;
@@ -1323,19 +911,13 @@ function fieldRow(label, value, copyable=false, mono=false, secret=false) {
 
 function toggleSecret(btn, value) {
   const fv = btn.closest('.field-row').querySelector('.field-value');
-  const icon = btn.querySelector('i');
   if (fv.dataset.shown === '1') {
-    fv.textContent = '••••••••';
-    fv.dataset.shown = '0';
-    btn.title = 'Показать';
-    if (icon) icon.setAttribute('data-lucide', 'eye');
+    fv.innerHTML = '••••••••'; fv.dataset.shown='0';
+    btn.innerHTML = icon('eye',14,14);
   } else {
-    fv.textContent = value;
-    fv.dataset.shown = '1';
-    btn.title = 'Скрыть';
-    if (icon) icon.setAttribute('data-lucide', 'eye-off');
+    fv.textContent = value; fv.dataset.shown='1';
+    btn.innerHTML = icon('eye-off',14,14);
   }
-  refreshIcons();
 }
 window.toggleSecret = toggleSecret;
 
@@ -1347,21 +929,22 @@ function closeView() {
 //  Edit Modal
 // ══════════════════════════════════════════════════════════════
 function openAdd() {
-  S.editId = null;
-  S.editType = 'card';
+  S.editId   = null;
+  S.editType = S.filter !== 'all' ? S.filter : 'card';
   selectedColor = CARD_COLORS[0].id;
   document.getElementById('edit-modal-title').textContent = 'Добавить запись';
   document.getElementById('ef-title').value = '';
   document.getElementById('edit-error').classList.add('hidden');
-  setActiveTypeTab('card');
-  renderDynamicFields('card', {});
-  document.getElementById('edit-overlay').classList.remove('hidden');
-  setTimeout(() => document.getElementById('ef-title').focus(), 50);
-  refreshIcons();
+  setActiveTypeTab(S.editType);
+  renderDynamicFields(S.editType, {});
+  const overlay = document.getElementById('edit-overlay');
+  overlay.classList.remove('hidden');
+  overlay.scrollTop = 0;
+  setTimeout(() => document.getElementById('ef-title').focus(), 80);
 }
 
 function openEdit(item) {
-  S.editId = item.id;
+  S.editId   = item.id;
   S.editType = item.type;
   selectedColor = item.color || CARD_COLORS[0].id;
   document.getElementById('edit-modal-title').textContent = 'Редактировать';
@@ -1369,8 +952,9 @@ function openEdit(item) {
   document.getElementById('edit-error').classList.add('hidden');
   setActiveTypeTab(item.type);
   renderDynamicFields(item.type, item.data || {});
-  document.getElementById('edit-overlay').classList.remove('hidden');
-  refreshIcons();
+  const overlay = document.getElementById('edit-overlay');
+  overlay.classList.remove('hidden');
+  overlay.scrollTop = 0;
 }
 
 function closeEdit() {
@@ -1378,10 +962,7 @@ function closeEdit() {
 }
 
 function setActiveTypeTab(type) {
-  document.querySelectorAll('.type-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.type === type);
-  });
-  refreshIcons();
+  document.querySelectorAll('.type-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
 }
 
 function renderDynamicFields(type, data) {
@@ -1392,9 +973,9 @@ function renderDynamicFields(type, data) {
     html = `
     <div class="edit-field-row">
       <div class="edit-field"><label>Банк</label><input id="ef-bank" placeholder="Kapital Bank, ABB..." value="${esc(data.bank||'')}"></div>
-      <div class="edit-field"><label>Владелец карты</label><input id="ef-cardholder" placeholder="FAIK ALIYEV" value="${esc(data.cardholder||'')}"></div>
+      <div class="edit-field"><label>Владелец</label><input id="ef-cardholder" placeholder="FAIK ALIYEV" value="${esc(data.cardholder||'')}"></div>
     </div>
-    <div class="edit-field"><label>Номер карты (16 цифр)</label><input id="ef-card-number" placeholder="0000 0000 0000 0000" maxlength="19" value="${esc(data.card_number||'')}"></div>
+    <div class="edit-field"><label>Номер карты</label><input id="ef-card-number" placeholder="0000 0000 0000 0000" maxlength="19" value="${esc(data.card_number||'')}"></div>
     <div class="edit-field-row">
       <div class="edit-field"><label>Срок (MM/YY)</label><input id="ef-expiry" placeholder="12/28" maxlength="5" value="${esc(data.expiry||'')}"></div>
       <div class="edit-field"><label>CVV</label><input id="ef-cvv" placeholder="•••" maxlength="4" type="password" value="${esc(data.cvv||'')}"></div>
@@ -1410,9 +991,7 @@ function renderDynamicFields(type, data) {
   } else if (type === 'document') {
     html = `
     <div class="edit-field"><label>Тип документа</label>
-      <select id="ef-doc-type">
-        ${DOC_TYPES.map(t=>`<option${data.doc_type===t?' selected':''}>${t}</option>`).join('')}
-      </select>
+      <select id="ef-doc-type">${DOC_TYPES.map(t=>`<option${data.doc_type===t?' selected':''}>${t}</option>`).join('')}</select>
     </div>
     <div class="edit-field"><label>Номер документа</label><input id="ef-doc-number" placeholder="AA1234567" value="${esc(data.doc_number||'')}"></div>
     <div class="edit-field"><label>Имя (как в документе)</label><input id="ef-name" placeholder="FAIK ALIYEV" value="${esc(data.name||'')}"></div>
@@ -1430,7 +1009,7 @@ function renderDynamicFields(type, data) {
     <div class="edit-field"><label>Заметка</label><textarea id="ef-notes" placeholder="Необязательно">${esc(data.notes||'')}</textarea></div>`;
   } else {
     html = `
-    <div class="edit-field"><label>Содержимое</label><textarea id="ef-content" placeholder="Текст заметки..." style="min-height:140px">${esc(data.content||'')}</textarea></div>`;
+    <div class="edit-field"><label>Содержимое</label><textarea id="ef-content" placeholder="Текст заметки..." style="min-height:130px">${esc(data.content||'')}</textarea></div>`;
   }
 
   container.innerHTML = html;
@@ -1453,7 +1032,7 @@ function renderDynamicFields(type, data) {
     });
   }
 
-  // Expiry formatting (MM/YY)
+  // Expiry MM/YY
   const expiryInput = container.querySelector('#ef-expiry[maxlength="5"]');
   if (expiryInput) {
     expiryInput.addEventListener('input', function() {
@@ -1462,15 +1041,13 @@ function renderDynamicFields(type, data) {
       this.value = v;
     });
   }
-
-  refreshIcons();
 }
 
 function collectFormData(type) {
   const g = id => document.getElementById(id)?.value?.trim() || '';
-  if (type === 'card') return { bank:g('ef-bank'), cardholder:g('ef-cardholder'), card_number:g('ef-card-number').replace(/\s/g,''), expiry:g('ef-expiry'), cvv:g('ef-cvv'), notes:g('ef-notes') };
-  if (type === 'document') return { doc_type:g('ef-doc-type'), doc_number:g('ef-doc-number'), name:g('ef-name'), issue_date:g('ef-issue-date'), expiry:g('ef-expiry'), issued_by:g('ef-issued-by'), notes:g('ef-notes') };
-  if (type === 'login') return { url:g('ef-url'), username:g('ef-username'), password:g('ef-password'), notes:g('ef-notes') };
+  if (type==='card')     return { bank:g('ef-bank'), cardholder:g('ef-cardholder'), card_number:g('ef-card-number').replace(/\s/g,''), expiry:g('ef-expiry'), cvv:g('ef-cvv'), notes:g('ef-notes') };
+  if (type==='document') return { doc_type:g('ef-doc-type'), doc_number:g('ef-doc-number'), name:g('ef-name'), issue_date:g('ef-issue-date'), expiry:g('ef-expiry'), issued_by:g('ef-issued-by'), notes:g('ef-notes') };
+  if (type==='login')    return { url:g('ef-url'), username:g('ef-username'), password:g('ef-password'), notes:g('ef-notes') };
   return { content:g('ef-content') };
 }
 
@@ -1480,18 +1057,13 @@ function collectFormData(type) {
 async function copyText(text, btn) {
   try {
     await navigator.clipboard.writeText(text);
-    const icon = btn.querySelector('i');
+    const orig = btn.innerHTML;
+    btn.innerHTML = icon('check',14,14);
     btn.classList.add('copied');
-    if (icon) icon.setAttribute('data-lucide', 'check');
-    refreshIcons();
-    setTimeout(() => { 
-      btn.classList.remove('copied'); 
-      if (icon) icon.setAttribute('data-lucide', 'copy');
-      refreshIcons();
-    }, 2000);
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
   } catch {
     const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    ta.value = text; ta.style.cssText='position:fixed;opacity:0';
     document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
   }
@@ -1507,69 +1079,54 @@ function esc(s) {
 // ══════════════════════════════════════════════════════════════
 //  Event Wiring
 // ══════════════════════════════════════════════════════════════
-document.getElementById('login-btn')?.addEventListener('click', doLogin);
-document.getElementById('login-password')?.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('logout-btn')?.addEventListener('click', doLogout);
-document.getElementById('fab-add-btn')?.addEventListener('click', openAdd);
-document.getElementById('edit-close-btn')?.addEventListener('click', closeEdit);
-document.getElementById('edit-cancel-btn')?.addEventListener('click', closeEdit);
-document.getElementById('edit-save-btn')?.addEventListener('click', saveItem);
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('logout-btn').addEventListener('click', doLogout);
+document.getElementById('add-btn').addEventListener('click', openAdd);
+document.getElementById('edit-cancel-btn').addEventListener('click', closeEdit);
+document.getElementById('edit-save-btn').addEventListener('click', saveItem);
 
-// Sync mobile tab bar clicks
-function setFilter(filter) {
-  S.filter = filter;
-  document.querySelectorAll('.mobile-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.filter === filter);
-  });
-  renderGrid();
-}
+// Mobile tab bar
+document.getElementById('tab-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-bar-item');
+  if (!btn) return;
+  setFilter(btn.dataset.filter);
+});
 
-// Mobile Bottom Tab Bar Wiring
-document.querySelectorAll('.mobile-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    setFilter(tab.dataset.filter);
-  });
+// Desktop section tabs
+document.getElementById('section-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.section-tab');
+  if (!btn) return;
+  setFilter(btn.dataset.filter);
 });
 
 // Type tabs in edit modal
-document.getElementById('type-tabs')?.addEventListener('click', e => {
+document.getElementById('type-tabs').addEventListener('click', e => {
   const tab = e.target.closest('.type-tab');
-  if (!tab || S.editId) return; // Can't change type when editing
+  if (!tab || S.editId) return;
   setActiveTypeTab(tab.dataset.type);
   S.editType = tab.dataset.type;
   renderDynamicFields(tab.dataset.type, {});
 });
 
 // Search
-document.getElementById('search-input')?.addEventListener('input', e => {
+document.getElementById('search-input').addEventListener('input', e => {
   S.search = e.target.value;
   renderGrid();
 });
-
-// Close modals on overlay click
-document.getElementById('view-overlay')?.addEventListener('click', e => { if(e.target === e.currentTarget) closeView(); });
-document.getElementById('edit-overlay')?.addEventListener('click', e => { if(e.target === e.currentTarget) closeEdit(); });
 
 // Keyboard
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeView(); closeEdit(); }
 });
 
-// Automatic resize support to switch layouts smoothly
-window.addEventListener('resize', renderGrid);
-
 // ── Go! ────────────────────────────────────────────────────
 init();
-// ══════════════════════════════════════════════════════════════
-//  Service Worker
-// ══════════════════════════════════════════════════════════════
+
+// ── Service Worker ─────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').then(reg => {
-      console.log('SW registered!', reg);
-    }).catch(err => {
-      console.log('SW registration failed: ', err);
-    });
+    navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
 </script>
