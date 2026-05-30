@@ -263,6 +263,7 @@ body {
   background: linear-gradient(135deg, rgba(255,255,255,.13) 0%, transparent 55%);
   pointer-events: none;
 }
+.card-header { display: flex; justify-content: space-between; align-items: center; }
 .card-chip svg { width: 26px; height: 20px; }
 .card-number-display {
   font-size: 13px; font-weight: 600; letter-spacing: 2.5px;
@@ -794,14 +795,16 @@ function renderBankCard(item, idx) {
   return `
   <div class="item-card stagger" data-id="${item.id}" style="--i:${idx}">
     <div class="bank-card-visual" style="background:${col.g}">
-      <div class="card-chip">${iconFill('chip',26,20)}</div>
+      <div class="card-header">
+        <div class="card-chip">${iconFill('chip',26,20)}</div>
+        <div class="card-bank-name">${esc(p.bank||'')}</div>
+      </div>
       <div class="card-number-display">${masked}</div>
       <div class="card-footer">
         <div>
           <div class="card-holder">${esc(item.title)}</div>
           <div class="card-expiry-val">${esc(p.expiry||'')}</div>
         </div>
-        <div class="card-bank-name">${esc(p.bank||'')}</div>
       </div>
     </div>
   </div>`;
@@ -857,14 +860,16 @@ function buildViewContent(item) {
     const cardStyle = col ? `background:${col.g}` : 'background:linear-gradient(135deg,#1a1a2e,#0f3460)';
     body = `
     <div class="bank-card-large" style="${cardStyle}">
-      <div class="card-chip">${iconFill('chip',32,26)}</div>
+      <div class="card-header">
+        <div class="card-chip">${iconFill('chip',32,26)}</div>
+        <div class="card-bank-name">${esc(d.bank||item.title)}</div>
+      </div>
       <div class="card-number-display">${num || '•••• •••• •••• ••••'}</div>
       <div class="card-footer">
         <div>
           <div class="card-holder">${esc(d.cardholder||'')}</div>
           <div class="card-expiry-val">${esc(d.expiry||'')}</div>
         </div>
-        <div class="card-bank-name">${esc(d.bank||item.title)}</div>
       </div>
     </div>
     <div class="fields-list">
@@ -1139,7 +1144,7 @@ init();
 // ── Service Worker ─────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js?v=2').catch(() => {});
+    navigator.serviceWorker.register('sw.js?v=3').catch(() => {});
   });
 }
 </script>

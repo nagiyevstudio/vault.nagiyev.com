@@ -141,7 +141,7 @@ function actionGetItems(): void {
             $item['preview'] = [
                 'bank'   => $raw['bank']   ?? '',
                 'expiry' => $raw['expiry'] ?? '',
-                'last4'  => strlen($num) >= 4 ? substr($num, 0, 4) . ' •••• •••• ' . substr($num, -4) : '',
+                'last4'  => strlen($num) >= 4 ? substr($num, 0, 4) . ' •••• ' . substr($num, -4) : '',
             ];
         } elseif ($item['type'] === 'document') {
             $item['preview'] = [
