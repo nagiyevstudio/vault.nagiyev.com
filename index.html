@@ -18,6 +18,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 /* ── Reset & Base ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,10 +35,10 @@
   --accent-2:   #8b5cf6;
   --danger:     #ef4444;
   --success:    #22c55e;
-  --radius-sm:  12px;
-  --radius:     20px;
-  --radius-lg:  28px;
-  --shadow:     0 16px 48px rgba(0,0,0,0.4);
+  --radius-sm:  8px;
+  --radius:     10px;
+  --radius-lg:  10px;
+  --shadow:     0 16px 48px rgba(0,0,0,0.5);
   --shadow-sm:  0 4px 16px rgba(0,0,0,0.3);
 }
 html, body { height: 100%; }
@@ -144,12 +145,12 @@ body {
 }
 .btn:active { transform: scale(.97); }
 .btn-primary {
-  padding: 14px 24px; font-size: 15px;
+  padding: 12px 22px; font-size: 14px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #fff;
-  box-shadow: 0 6px 24px rgba(99,102,241,.4);
+  box-shadow: 0 6px 24px rgba(99,102,241,.3);
 }
-.btn-primary:hover { box-shadow: 0 10px 32px rgba(99,102,241,.55); transform: translateY(-1px); }
+.btn-primary:hover { box-shadow: 0 10px 32px rgba(99,102,241,.45); transform: translateY(-1px); }
 .btn-full { width: 100%; justify-content: center; margin-top: 8px; }
 .btn-ghost {
   padding: 10px 18px; font-size: 14px;
@@ -158,38 +159,42 @@ body {
   color: var(--text-2);
 }
 .btn-ghost:hover { background: rgba(255,255,255,.1); color: var(--text); }
-.btn-sm { padding: 9px 18px; font-size: 14px; }
-.btn-danger { background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.25); color: #fca5a5; }
-.btn-danger:hover { background: rgba(239,68,68,.25); }
+.btn-sm { padding: 9px 16px; font-size: 13px; }
+.btn-danger { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.2); color: #fca5a5; }
+.btn-danger:hover { background: rgba(239,68,68,.22); }
 .btn-icon {
   width: 32px; height: 32px; padding: 0;
   justify-content: center;
   background: rgba(255,255,255,.07);
   border: 1px solid var(--border);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   flex-shrink: 0;
 }
 .btn-icon:hover { background: rgba(255,255,255,.12); color: var(--text); }
 .btn-icon.copied { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.3); color: #86efac; }
+.btn-icon i { width: 16px; height: 16px; }
 
 /* ── Header ────────────────────────────────────────────────── */
 .vault-header {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; gap: 16px;
-  padding: 14px 24px;
-  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 12px 24px;
+  border-radius: 0;
   border-top: none;
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--border);
+  background: rgba(11, 11, 24, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 .header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.header-logo { width: 32px; height: 32px; object-fit: contain; }
-.header-title { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+.header-logo { width: 28px; height: 28px; object-fit: contain; }
+.header-title { font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
 .header-search { flex: 1; max-width: 400px; margin: 0 auto; }
 .header-search input {
   width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--border);
-  border-radius: 100px; padding: 10px 18px;
+  border-radius: var(--radius-sm); padding: 9px 16px;
   color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
   transition: border-color .2s, background .2s;
 }
@@ -197,42 +202,179 @@ body {
 .header-search input::placeholder { color: var(--text-3); }
 .header-right { display: flex; gap: 10px; flex-shrink: 0; align-items: center; }
 
-/* ── Filter Tabs ───────────────────────────────────────────── */
+/* Hide unused top filter tabs */
 .filter-tabs {
-  display: flex; gap: 8px; padding: 20px 24px 8px;
-  overflow-x: auto; scrollbar-width: none;
+  display: none !important;
 }
-.filter-tabs::-webkit-scrollbar { display: none; }
-.tab {
-  padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
-  background: var(--glass-2); color: var(--text-2);
-  font-family: 'Figtree', sans-serif; font-size: 14px; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  transition: all .2s;
+
+/* ── Floating Action Button (FAB) ──────────────────────────── */
+.fab-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 140;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.tab:hover { background: var(--glass); color: var(--text); }
-.tab.active {
-  background: linear-gradient(135deg, rgba(99,102,241,.2), rgba(139,92,246,.2));
-  border-color: rgba(99,102,241,.4);
+.fab-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.6);
+}
+.fab-btn:active {
+  transform: scale(0.95);
+}
+.fab-btn i {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.5;
+}
+
+/* ── Mobile Tab Bar ────────────────────────────────────────── */
+.mobile-tab-bar {
+  display: none;
+}
+
+/* ── Dashboard (Desktop Categorized View) ──────────────────── */
+.vault-grid {
+  display: block;
+  padding: 24px 24px 80px;
+}
+.dashboard-desktop {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.dashboard-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--text);
 }
-
-/* ── Vault Grid ────────────────────────────────────────────── */
-.vault-grid {
+.dashboard-section-title i {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+.dashboard-cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  padding: 12px 20px 40px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
-.empty-state {
-  grid-column: 1/-1;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 80px 24px; gap: 12px; color: var(--text-3);
+.dashboard-columns-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
-.empty-state .icon { font-size: 48px; opacity: .5; }
-.empty-state p { font-size: 16px; }
+@media (min-width: 768px) {
+  .dashboard-columns-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1100px) {
+  .dashboard-columns-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
 
-/* ── Item Cards ────────────────────────────────────────────── */
+/* ── Compact Lists ─────────────────────────────────────────── */
+.compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--glass-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.compact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.compact-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+.compact-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.compact-item-icon i {
+  width: 16px;
+  height: 16px;
+}
+.compact-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.compact-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.compact-item-desc {
+  font-size: 11.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.compact-item-date {
+  font-size: 10.5px;
+  color: var(--text-3);
+  margin-top: 1px;
+}
+.compact-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+/* ── Item Cards (Bank Cards) ────────────────────────────────── */
 .item-card {
   border-radius: var(--radius);
   cursor: pointer;
@@ -246,7 +388,7 @@ body {
 .bank-card-visual {
   width: 100%; aspect-ratio: 1.586;
   border-radius: var(--radius);
-  padding: 22px 24px;
+  padding: 20px;
   position: relative;
   overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between;
@@ -257,88 +399,33 @@ body {
   background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
   pointer-events: none;
 }
-.card-chip { font-size: 28px; opacity: .9; }
+.card-chip { font-size: 24px; opacity: .9; display: flex; align-items: center; }
 .card-number-display {
-  font-size: 17px; font-weight: 600; letter-spacing: 3px;
+  font-size: 16px; font-weight: 600; letter-spacing: 3px;
   color: rgba(255,255,255,.85); font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 8px rgba(0,0,0,.4);
+  margin: 12px 0;
 }
 .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-.card-holder { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.7); }
-.card-expiry-label { font-size: 9px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .8px; }
-.card-expiry-val { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); }
-.card-bank-name { font-size: 18px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: -.3px; }
+.card-holder { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.7); }
+.card-expiry-label { font-size: 8px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .8px; }
+.card-expiry-val { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); }
+.card-bank-name { font-size: 15px; font-weight: 800; color: rgba(255,255,255,.9); letter-spacing: -.3px; }
 
-/* Document Card */
-.doc-card {
-  padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 10px;
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 24px; gap: 12px; color: var(--text-3);
+  text-align: center;
 }
-.doc-card-head { display: flex; align-items: center; gap: 10px; }
-.doc-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.doc-icon.type-document { background: rgba(59,130,246,.15); }
-.doc-icon.type-login    { background: rgba(99,102,241,.15); }
-.doc-icon.type-note     { background: rgba(251,191,36,.1);  }
-.doc-card-title { font-size: 14px; font-weight: 600; }
-.doc-card-type  { font-size: 11px; color: var(--text-2); margin-top: 1px; }
-.doc-card-preview {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.doc-chip {
-  padding: 3px 8px; border-radius: 100px;
-  background: rgba(255,255,255,.06); border: 1px solid var(--border);
-  font-size: 11px; color: var(--text-2);
-}
-.doc-card-date { font-size: 10px; color: var(--text-3); margin-top: 2px; }
-
-/* Login Card - Compact with actions */
-.item-card[data-item-type="login"] { }
-.item-card[data-item-type="login"] .doc-card {
-  padding: 12px 14px;
-  gap: 8px;
-}
-.item-card[data-item-type="login"] .login-site {
-  font-size: 13px; font-weight: 600; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.item-card[data-item-type="login"] .login-user {
-  font-size: 12px; color: var(--text-2);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.item-card[data-item-type="login"] .login-actions {
-  display: flex; gap: 6px; margin-top: 4px;
-}
-.item-card[data-item-type="login"] .login-actions button {
-  flex: 1;
-  padding: 6px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.05);
-  color: var(--text-2);
-  cursor: pointer;
-  font-family: 'Figtree', sans-serif;
-}
-.item-card[data-item-type="login"] .login-actions button:hover {
-  background: rgba(255,255,255,.1);
-  color: var(--text);
-}
-.item-card[data-item-type="login"] .login-actions .btn-copy { }
-.item-card[data-item-type="login"] .login-actions .btn-edit { }
+.empty-state i { font-size: 32px; opacity: .5; }
+.empty-state p { font-size: 15px; }
 
 /* ── Modals ────────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 200;
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
@@ -348,26 +435,30 @@ body {
   width: 100%; max-width: 520px;
   max-height: 90vh; overflow-y: auto;
   border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,.1) transparent;
   animation: scaleIn .25s ease;
+  background: rgba(20, 20, 35, 0.85);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
 }
 .modal::-webkit-scrollbar { width: 4px; }
 .modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
 /* View Modal */
-.view-modal-content { padding: 32px; }
+.view-modal-content { padding: 28px; }
 .view-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
 .view-modal-header-info { display: flex; align-items: center; gap: 12px; }
 .view-modal-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.view-modal-title { font-size: 22px; font-weight: 800; }
-.view-modal-subtitle { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.view-modal-title { font-size: 20px; font-weight: 800; color: var(--text); }
+.view-modal-subtitle { font-size: 12px; color: var(--text-2); margin-top: 2px; }
 .view-modal-actions { display: flex; gap: 8px; flex-shrink: 0; }
 .bank-card-large {
   width: 100%; aspect-ratio: 1.586;
   border-radius: var(--radius);
-  padding: 28px 30px;
+  padding: 24px;
   margin-bottom: 24px;
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; justify-content: space-between;
@@ -377,30 +468,30 @@ body {
   position: absolute; inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,.15) 0%, transparent 60%);
 }
-.bank-card-large .card-chip { font-size: 36px; }
-.bank-card-large .card-number-display { font-size: 22px; letter-spacing: 4px; }
-.bank-card-large .card-bank-name { font-size: 22px; }
+.bank-card-large .card-chip { font-size: 32px; }
+.bank-card-large .card-number-display { font-size: 20px; letter-spacing: 4px; }
+.bank-card-large .card-bank-name { font-size: 20px; }
 
 /* Field rows */
-.fields-list { display: flex; flex-direction: column; gap: 12px; }
+.fields-list { display: flex; flex-direction: column; gap: 10px; }
 .field-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 14px 16px;
-  background: rgba(255,255,255,.04);
+  padding: 12px 14px;
+  background: rgba(255,255,255,.03);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
 }
 .field-info { flex: 1; min-width: 0; }
-.field-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 4px; }
-.field-value { font-size: 15px; color: var(--text); word-break: break-all; }
-.field-value.mono { font-family: 'SF Mono', 'Fira Code', monospace; letter-spacing: 1.5px; }
-.field-value.secret { letter-spacing: 3px; color: var(--text-2); }
+.field-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 4px; }
+.field-value { font-size: 14px; color: var(--text); word-break: break-all; }
+.field-value.mono { font-family: 'SF Mono', 'Fira Code', monospace; letter-spacing: 1px; }
+.field-value.secret { letter-spacing: 2px; color: var(--text-2); }
 .modal-footer { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
 
 /* Edit Modal */
-.edit-modal-content { padding: 32px; }
-.edit-modal-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; }
-.type-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+.edit-modal-content { padding: 28px; }
+.edit-modal-title { font-size: 20px; font-weight: 800; }
+.type-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
 .type-tab {
   padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);
   background: var(--glass-2); color: var(--text-2);
@@ -411,13 +502,13 @@ body {
 .type-tab.active {
   background: rgba(99,102,241,.2); border-color: rgba(99,102,241,.4); color: var(--text);
 }
-.edit-field { margin-bottom: 16px; }
-.edit-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
+.edit-field { margin-bottom: 12px; }
+.edit-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 6px; }
 .edit-field input, .edit-field select, .edit-field textarea {
   width: 100%;
   background: rgba(255,255,255,.05); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 12px 16px;
-  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
   transition: border-color .2s, background .2s;
 }
 .edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
@@ -425,46 +516,158 @@ body {
 }
 .edit-field input::placeholder, .edit-field textarea::placeholder { color: var(--text-3); }
 .edit-field select option { background: #1a1a2e; }
-.edit-field textarea { resize: vertical; min-height: 90px; }
+.edit-field textarea { resize: vertical; min-height: 80px; }
 .edit-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
 .color-dot {
-  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
   border: 2px solid transparent;
   transition: transform .15s, border-color .15s;
 }
 .color-dot:hover { transform: scale(1.1); }
 .color-dot.selected { border-color: rgba(255,255,255,.8); transform: scale(1.15); }
-.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
 
 /* ── Animations ────────────────────────────────────────────── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
   from { opacity: 0; } to { opacity: 1; }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(.94) translateY(10px); }
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-.stagger { animation-delay: calc(var(--i, 0) * 60ms); }
+.stagger { animation-delay: calc(var(--i, 0) * 35ms); }
 
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  .vault-header { flex-wrap: wrap; }
-  .header-search { order: 3; flex-basis: 100%; max-width: none; }
-  .vault-grid { grid-template-columns: repeat(2, 1fr); padding: 12px 16px 40px; gap: 10px; }
-  .vault-grid .item-card.glass { grid-column: 1 / -1; }
-  .bank-card-visual { padding: 14px 16px; }
-  .card-number-display { font-size: 13px; letter-spacing: 2px; }
-  .card-chip { font-size: 20px; }
-  .card-holder { font-size: 9px; letter-spacing: 1px; }
-  .card-expiry-val { font-size: 10px; }
-  .card-bank-name { font-size: 11px !important; }
-  .card-footer { gap: 4px; }
-  .modal { max-width: 100%; }
+  .vault-header {
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+  .header-left {
+    display: none;
+  }
+  .header-search {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+  }
+  .header-search input {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .header-right {
+    gap: 4px;
+  }
+  .header-right #logout-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .vault-grid {
+    padding: 16px 14px 100px;
+  }
+  
+  /* Mobile Tab Bar */
+  .mobile-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(11, 11, 24, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-top: 1px solid var(--border);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 150;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+  }
+  .mobile-tab {
+    background: none;
+    border: none;
+    color: var(--text-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    transition: color 0.2s;
+  }
+  .mobile-tab i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+  }
+  .mobile-tab.active {
+    color: var(--accent);
+  }
+
+  .fab-btn {
+    bottom: 76px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+  }
+  .fab-btn i {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Cards Grid on Mobile - Strict 2 Columns */
+  .dashboard-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  
+  .bank-card-visual { padding: 12px; }
+  .card-number-display { font-size: 12px; letter-spacing: 1.5px; margin: 8px 0; }
+  .card-chip { font-size: 18px; }
+  .card-holder { font-size: 8px; letter-spacing: 0.5px; }
+  .card-expiry-val { font-size: 9px; }
+  .card-bank-name { font-size: 10px !important; }
+  .card-footer { gap: 2px; }
+
+  /* Full Screen Modals on Mobile */
+  .modal-overlay {
+    padding: 0;
+  }
+  .modal {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border: none;
+    background: var(--bg);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+  }
+  .view-modal-content {
+    padding: 20px !important;
+    flex: 1;
+  }
+  .edit-modal-content {
+    padding: 20px !important;
+    flex: 1;
+  }
 }
 </style>
 </head>
@@ -499,49 +702,82 @@ body {
 <!-- ══ Vault Screen ══════════════════════════════════════════ -->
 <div id="vault-screen" class="screen hidden">
 
-  <header class="vault-header glass">
+  <header class="vault-header">
     <div class="header-left">
       <img src="logo.png" alt="Logo" class="header-logo">
       <span class="header-title">Vault</span>
     </div>
     <div class="header-search">
-      <input type="search" id="search-input" placeholder="🔍  Поиск..." autocomplete="off">
+      <input type="search" id="search-input" placeholder="Поиск..." autocomplete="off">
     </div>
     <div class="header-right">
-      <button class="btn btn-primary btn-sm" id="add-btn">+ Добавить</button>
-      <button class="btn btn-ghost btn-sm" id="logout-btn">Выйти</button>
+      <button class="btn btn-ghost btn-sm btn-icon" id="logout-btn" title="Выйти"><i data-lucide="log-out"></i></button>
     </div>
   </header>
 
   <div class="filter-tabs" id="filter-tabs">
     <button class="tab active" data-filter="all">Все</button>
-    <button class="tab" data-filter="card">💳 Карты</button>
-    <button class="tab" data-filter="document">📄 Документы</button>
-    <button class="tab" data-filter="login">🔑 Пароли</button>
-    <button class="tab" data-filter="note">📝 Заметки</button>
+    <button class="tab" data-filter="card">Карты</button>
+    <button class="tab" data-filter="document">Документы</button>
+    <button class="tab" data-filter="login">Пароли</button>
+    <button class="tab" data-filter="note">Заметки</button>
   </div>
 
   <main class="vault-grid" id="vault-grid"></main>
+
+  <!-- Floating Action Button (FAB) -->
+  <button class="fab-btn" id="fab-add-btn" title="Добавить запись">
+    <i data-lucide="plus"></i>
+  </button>
+
+  <!-- Mobile Bottom Tab Bar -->
+  <nav class="mobile-tab-bar">
+    <button class="mobile-tab active" data-filter="all">
+      <i data-lucide="layers"></i>
+      <span>Все</span>
+    </button>
+    <button class="mobile-tab" data-filter="card">
+      <i data-lucide="credit-card"></i>
+      <span>Карты</span>
+    </button>
+    <button class="mobile-tab" data-filter="login">
+      <i data-lucide="key"></i>
+      <span>Пароли</span>
+    </button>
+    <button class="mobile-tab" data-filter="document">
+      <i data-lucide="file-text"></i>
+      <span>Доки</span>
+    </button>
+    <button class="mobile-tab" data-filter="note">
+      <i data-lucide="sticky-note"></i>
+      <span>Заметки</span>
+    </button>
+  </nav>
 </div>
 
 <!-- ══ View Modal ════════════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="view-overlay">
-  <div class="modal glass" id="view-modal">
+  <div class="modal" id="view-modal">
     <div class="view-modal-content" id="view-modal-content"></div>
   </div>
 </div>
 
 <!-- ══ Edit Modal ════════════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="edit-overlay">
-  <div class="modal glass">
+  <div class="modal">
     <div class="edit-modal-content">
-      <h2 class="edit-modal-title" id="edit-modal-title">Добавить</h2>
+      <div class="edit-modal-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+        <h2 class="edit-modal-title" id="edit-modal-title" style="margin-bottom:0;">Добавить запись</h2>
+        <button class="btn btn-icon" id="edit-close-btn" title="Закрыть">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
 
       <div class="type-tabs" id="type-tabs">
-        <button class="type-tab active" data-type="card">💳 Карта</button>
-        <button class="type-tab" data-type="document">📄 Документ</button>
-        <button class="type-tab" data-type="login">🔑 Пароль</button>
-        <button class="type-tab" data-type="note">📝 Заметка</button>
+        <button class="type-tab active" data-type="card"><i data-lucide="credit-card"></i> <span>Карта</span></button>
+        <button class="type-tab" data-type="document"><i data-lucide="file-text"></i> <span>Документ</span></button>
+        <button class="type-tab" data-type="login"><i data-lucide="key"></i> <span>Пароль</span></button>
+        <button class="type-tab" data-type="note"><i data-lucide="sticky-note"></i> <span>Заметка</span></button>
       </div>
 
       <div class="edit-field">
@@ -583,10 +819,21 @@ const CARD_COLORS = [
   { id:'gold',     g:'linear-gradient(135deg,#92400e,#d97706)' },
   { id:'carbon',   g:'linear-gradient(135deg,#18181b,#3f3f46)' },
   { id:'aurora',   g:'linear-gradient(135deg,#4a044e,#7e22ce,#1e3a5f)' },
+  { id:'sunset',   g:'linear-gradient(135deg,#f97316,#ec4899)' },
+  { id:'mint',     g:'linear-gradient(135deg,#0d9488,#0ea5e9)' },
+  { id:'amethyst', g:'linear-gradient(135deg,#6b21a8,#a855f7)' },
+  { id:'cyberpunk',g:'linear-gradient(135deg,#f43f5e,#06b6d4)' }
 ];
 let selectedColor = CARD_COLORS[0].id;
 
 const DOC_TYPES = ['Паспорт','ID карта','Водительские права','Загранпаспорт','Медицинский полис','ИНН','Другое'];
+
+// ── Lucide Icon Refresh Helper ─────────────────────────────
+function refreshIcons() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+}
 
 // ══════════════════════════════════════════════════════════════
 //  API
@@ -699,74 +946,277 @@ async function showVault() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  Grid Rendering
+//  Grid & Dashboard Rendering
 // ══════════════════════════════════════════════════════════════
 function renderGrid() {
   const grid = document.getElementById('vault-grid');
   let items = S.items;
 
-  if (S.filter !== 'all') items = items.filter(i => i.type === S.filter);
+  // Apply search
   if (S.search) {
     const q = S.search.toLowerCase();
-    items = items.filter(i => i.title.toLowerCase().includes(q));
+    items = items.filter(i => {
+      const matchTitle = i.title.toLowerCase().includes(q);
+      const d = i.data || {};
+      const matchData = Object.values(d).some(val => String(val).toLowerCase().includes(q));
+      return matchTitle || matchData;
+    });
   }
 
-  if (!items.length) {
-    grid.innerHTML = `<div class="empty-state"><span class="icon">🗄️</span><p>Ничего нет. Добавь первую запись!</p></div>`;
-    return;
+  const isMobile = window.innerWidth <= 600;
+
+  if (isMobile) {
+    let filtered = items;
+    if (S.filter !== 'all') {
+      filtered = items.filter(i => i.type === S.filter);
+    }
+
+    if (S.filter === 'all') {
+      const cards = filtered.filter(i => i.type === 'card');
+      const logins = filtered.filter(i => i.type === 'login');
+      const docs = filtered.filter(i => i.type === 'document');
+      const notes = filtered.filter(i => i.type === 'note');
+
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>Ничего не найдено. Добавьте первую запись!</p></div>`;
+        refreshIcons();
+        return;
+      }
+
+      let html = `<div class="dashboard-desktop">`;
+      
+      if (cards.length) {
+        html += `
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="credit-card"></i> Карты</div>
+          </div>
+          <div class="dashboard-cards-grid">
+            ${cards.map((item, idx) => renderItemCard(item, idx)).join('')}
+          </div>
+        </div>`;
+      }
+      
+      if (logins.length) {
+        html += `
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="key"></i> Пароли</div>
+          </div>
+          <div class="compact-list">
+            ${logins.map((item, idx) => renderCompactItem(item, idx)).join('')}
+          </div>
+        </div>`;
+      }
+      
+      if (docs.length) {
+        html += `
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="file-text"></i> Документы</div>
+          </div>
+          <div class="compact-list">
+            ${docs.map((item, idx) => renderCompactItem(item, idx)).join('')}
+          </div>
+        </div>`;
+      }
+      
+      if (notes.length) {
+        html += `
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="sticky-note"></i> Заметки</div>
+          </div>
+          <div class="compact-list">
+            ${notes.map((item, idx) => renderCompactItem(item, idx)).join('')}
+          </div>
+        </div>`;
+      }
+      
+      html += `</div>`;
+      grid.innerHTML = html;
+    } else {
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>В этом разделе пока ничего нет</p></div>`;
+        refreshIcons();
+        return;
+      }
+
+      if (S.filter === 'card') {
+        grid.innerHTML = `<div class="dashboard-cards-grid">${filtered.map((item, idx) => renderItemCard(item, idx)).join('')}</div>`;
+      } else {
+        grid.innerHTML = `<div class="compact-list">${filtered.map((item, idx) => renderCompactItem(item, idx)).join('')}</div>`;
+      }
+    }
+  } else {
+    // Desktop Dashboard View (Grouped by sections)
+    const cards = items.filter(i => i.type === 'card');
+    const logins = items.filter(i => i.type === 'login');
+    const docs = items.filter(i => i.type === 'document');
+    const notes = items.filter(i => i.type === 'note');
+
+    if (!items.length) {
+      grid.innerHTML = `<div class="empty-state"><i data-lucide="archive"></i><p>Ничего не найдено. Нажмите кнопку «+» внизу справа!</p></div>`;
+      refreshIcons();
+      return;
+    }
+
+    let html = `
+    <div class="dashboard-desktop">
+      <div class="dashboard-section">
+        <div class="dashboard-section-header">
+          <div class="dashboard-section-title"><i data-lucide="credit-card"></i> Банковские карты</div>
+        </div>
+        <div class="dashboard-cards-grid">
+          ${cards.length ? cards.map((item, idx) => renderItemCard(item, idx)).join('') : `<div class="compact-empty">Карты не добавлены</div>`}
+        </div>
+      </div>
+      
+      <div class="dashboard-columns-grid">
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="key"></i> Пароли и логины</div>
+          </div>
+          <div class="compact-list">
+            ${logins.length ? logins.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Пароли не добавлены</div>`}
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="file-text"></i> Документы</div>
+          </div>
+          <div class="compact-list">
+            ${docs.length ? docs.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Документы не добавлены</div>`}
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <div class="dashboard-section-header">
+            <div class="dashboard-section-title"><i data-lucide="sticky-note"></i> Заметки</div>
+          </div>
+          <div class="compact-list">
+            ${notes.length ? notes.map((item, idx) => renderCompactItem(item, idx)).join('') : `<div class="compact-empty">Заметки не добавлены</div>`}
+          </div>
+        </div>
+      </div>
+    </div>`;
+    
+    grid.innerHTML = html;
   }
 
-  grid.innerHTML = items.map((item, idx) => renderItemCard(item, idx)).join('');
-
-  grid.querySelectorAll('.item-card').forEach(el => {
+  // Click wiring
+  grid.querySelectorAll('.item-card, .compact-item').forEach(el => {
     el.addEventListener('click', () => openView(+el.dataset.id));
   });
+
+  refreshIcons();
 }
 
 function renderItemCard(item, idx) {
   const style = `--i:${idx}`;
   if (item.type === 'card') return renderBankCardThumb(item, style);
-  return renderGenericCard(item, style);
+  return renderGenericCard(item, style); // backup
 }
 
 function renderBankCardThumb(item, style) {
   const col = CARD_COLORS.find(c => c.id === item.color) || CARD_COLORS[0];
-  const p = item.preview || {};
-  const masked = p.last4 || '•••• •••• •••• ••••';
+  const preview = item.preview || {};
+  const d = item.data || {};
+  const bank = preview.bank || d.bank || '';
+  const expiry = preview.expiry || d.expiry || '';
+  let cardNum = preview.last4 || d.card_number || '•••• •••• •••• ••••';
+  if (cardNum && cardNum.length === 16) {
+    cardNum = '•••• •••• •••• ' + cardNum.slice(-4);
+  } else if (cardNum && cardNum.length > 4 && !cardNum.includes(' ')) {
+    cardNum = cardNum.replace(/(.{4})/g, '$1 ').trim();
+  }
 
   return `
   <div class="item-card stagger" data-id="${item.id}" style="${style}">
     <div class="bank-card-visual" style="background:${col.g}">
-      <div class="card-chip">💳</div>
-      <div class="card-number-display">${masked}</div>
+      <div class="card-chip"><i data-lucide="credit-card" style="width:20px; height:20px; color:rgba(255,255,255,0.85);"></i></div>
+      <div class="card-number-display">${cardNum}</div>
       <div class="card-footer">
         <div>
           <div class="card-holder">${esc(item.title)}</div>
-          <div class="card-expiry-val" style="font-size:10px;margin-top:2px;opacity:.7">${esc(p.expiry || '')}</div>
+          <div class="card-expiry-val" style="font-size:10px;margin-top:2px;opacity:.7">${esc(expiry)}</div>
         </div>
-        <div class="card-bank-name" style="font-size:14px;opacity:.9;text-align:right;max-width:60%">${esc(p.bank || '')}</div>
+        <div class="card-bank-name" style="font-size:13px;opacity:.9;text-align:right;max-width:60%">${esc(bank)}</div>
       </div>
     </div>
   </div>`;
 }
 
 function renderGenericCard(item, style) {
-  const icons = { document:'📄', login:'🔑', note:'📝' };
+  // Backup card for Notes/Logins if ever rendered in cards layout
+  const icons = { document:'file-text', login:'key', note:'sticky-note' };
   const labels = { document:'Документ', login:'Логин / Пароль', note:'Заметка' };
   const date = new Date(item.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
   return `
   <div class="item-card glass stagger" data-id="${item.id}" style="${style}">
-    <div class="doc-card">
-      <div class="doc-card-head">
-        <div class="doc-icon type-${item.type}">${icons[item.type]||'📝'}</div>
+    <div class="doc-card" style="padding: 14px 16px; display:flex; flex-direction:column; gap:10px;">
+      <div class="doc-card-head" style="display:flex; align-items:center; gap:10px;">
+        <div class="doc-icon type-${item.type}" style="width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:rgba(255,255,255,0.08);"><i data-lucide="${icons[item.type]||'sticky-note'}" style="width:18px;height:18px;"></i></div>
         <div>
-          <div class="doc-card-title">${esc(item.title)}</div>
-          <div class="doc-card-type">${labels[item.type]||item.type}</div>
+          <div class="doc-card-title" style="font-size:14px; font-weight:600;">${esc(item.title)}</div>
+          <div class="doc-card-type" style="font-size:11px; color:var(--text-2); margin-top:1px;">${labels[item.type]||item.type}</div>
         </div>
       </div>
-      <div class="doc-card-date">Добавлено ${date}</div>
+      <div class="doc-card-date" style="font-size:10px; color:var(--text-3); margin-top:2px;">Добавлено ${date}</div>
     </div>
   </div>`;
+}
+
+function renderCompactItem(item, idx) {
+  const style = `--i:${idx}`;
+  const date = new Date(item.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
+  
+  if (item.type === 'login') {
+    const p = item.data || {};
+    const iconStyle = 'background: rgba(99, 102, 241, 0.12); color: var(--accent);';
+    return `
+    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
+      <div class="compact-item-icon" style="${iconStyle}">
+        <i data-lucide="key"></i>
+      </div>
+      <div class="compact-item-info">
+        <div class="compact-item-title">${esc(item.title)}</div>
+        <div class="compact-item-desc">${esc(p.username || p.url || 'Нет логина')}</div>
+        <div class="compact-item-date">Добавлено ${date}</div>
+      </div>
+    </div>`;
+  } else if (item.type === 'document') {
+    const p = item.data || {};
+    const iconStyle = 'background: rgba(59, 130, 246, 0.12); color: #3b82f6;';
+    return `
+    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
+      <div class="compact-item-icon" style="${iconStyle}">
+        <i data-lucide="file-text"></i>
+      </div>
+      <div class="compact-item-info">
+        <div class="compact-item-title">${esc(item.title)}</div>
+        <div class="compact-item-desc">${esc(p.doc_type || 'Документ')}</div>
+        <div class="compact-item-date">Добавлено ${date}</div>
+      </div>
+    </div>`;
+  } else {
+    // note
+    const p = item.data || {};
+    const textSnippet = p.content || 'Заметка';
+    const iconStyle = 'background: rgba(251, 191, 36, 0.12); color: #fbbf24;';
+    return `
+    <div class="compact-item stagger" data-id="${item.id}" style="${style}">
+      <div class="compact-item-icon" style="${iconStyle}">
+        <i data-lucide="sticky-note"></i>
+      </div>
+      <div class="compact-item-info">
+        <div class="compact-item-title">${esc(item.title)}</div>
+        <div class="compact-item-desc">${esc(textSnippet.length > 45 ? textSnippet.slice(0, 45) + '...' : textSnippet)}</div>
+        <div class="compact-item-date">Добавлено ${date}</div>
+      </div>
+    </div>`;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -791,10 +1241,12 @@ async function openView(id) {
       copyText(btn.dataset.value, btn);
     });
   });
+
+  refreshIcons();
 }
 
 function buildViewContent(item) {
-  const labels = { card:'💳 Банковская карта', document:'📄 Документ', login:'🔑 Пароль / Логин', note:'📝 Заметка' };
+  const labels = { card:'Банковская карта', document:'Документ', login:'Пароль / Логин', note:'Заметка' };
   const d = item.data || {};
   const col = CARD_COLORS.find(c => c.id === item.color);
   const colorDot = col ? `<div class="view-modal-dot" style="background:${col.g}"></div>` : '';
@@ -844,12 +1296,12 @@ function buildViewContent(item) {
         <div class="view-modal-subtitle">${labels[item.type]||item.type}</div>
       </div>
     </div>
-    <button class="btn btn-icon" id="view-close-btn" title="Закрыть">✕</button>
+    <button class="btn btn-icon" id="view-close-btn" title="Закрыть"><i data-lucide="x"></i></button>
   </div>
   ${body}
   <div class="modal-footer">
-    <button class="btn btn-danger btn-sm" id="view-delete-btn">🗑 Удалить</button>
-    <button class="btn btn-ghost btn-sm" id="view-edit-btn">✏️ Изменить</button>
+    <button class="btn btn-danger btn-sm" id="view-delete-btn"><i data-lucide="trash-2"></i> Удалить</button>
+    <button class="btn btn-ghost btn-sm" id="view-edit-btn"><i data-lucide="pencil"></i> Изменить</button>
   </div>`;
 }
 
@@ -857,8 +1309,8 @@ function fieldRow(label, value, copyable=false, mono=false, secret=false) {
   if (!value) return '';
   const cls = mono ? 'mono' : secret ? 'secret' : '';
   const display = secret ? '••••••••' : esc(value);
-  const showToggle = secret ? `<button class="btn btn-icon" onclick="toggleSecret(this,'${esc(value).replace(/'/g,"\\'")}')">👁</button>` : '';
-  const copyBtn = copyable || secret ? `<button class="btn btn-icon copy-field-btn" data-value="${esc(value)}" title="Копировать">⎘</button>` : '';
+  const showToggle = secret ? `<button class="btn btn-icon toggle-secret-btn" onclick="toggleSecret(this,'${esc(value).replace(/'/g,"\\'")}')" title="Показать"><i data-lucide="eye"></i></button>` : '';
+  const copyBtn = copyable || secret ? `<button class="btn btn-icon copy-field-btn" data-value="${esc(value)}" title="Копировать"><i data-lucide="copy"></i></button>` : '';
   return `
   <div class="field-row">
     <div class="field-info">
@@ -871,8 +1323,19 @@ function fieldRow(label, value, copyable=false, mono=false, secret=false) {
 
 function toggleSecret(btn, value) {
   const fv = btn.closest('.field-row').querySelector('.field-value');
-  if (fv.dataset.shown === '1') { fv.textContent = '••••••••'; fv.dataset.shown='0'; btn.textContent='👁'; }
-  else { fv.textContent = value; fv.dataset.shown='1'; btn.textContent='🔒'; }
+  const icon = btn.querySelector('i');
+  if (fv.dataset.shown === '1') {
+    fv.textContent = '••••••••';
+    fv.dataset.shown = '0';
+    btn.title = 'Показать';
+    if (icon) icon.setAttribute('data-lucide', 'eye');
+  } else {
+    fv.textContent = value;
+    fv.dataset.shown = '1';
+    btn.title = 'Скрыть';
+    if (icon) icon.setAttribute('data-lucide', 'eye-off');
+  }
+  refreshIcons();
 }
 window.toggleSecret = toggleSecret;
 
@@ -894,6 +1357,7 @@ function openAdd() {
   renderDynamicFields('card', {});
   document.getElementById('edit-overlay').classList.remove('hidden');
   setTimeout(() => document.getElementById('ef-title').focus(), 50);
+  refreshIcons();
 }
 
 function openEdit(item) {
@@ -906,6 +1370,7 @@ function openEdit(item) {
   setActiveTypeTab(item.type);
   renderDynamicFields(item.type, item.data || {});
   document.getElementById('edit-overlay').classList.remove('hidden');
+  refreshIcons();
 }
 
 function closeEdit() {
@@ -916,6 +1381,7 @@ function setActiveTypeTab(type) {
   document.querySelectorAll('.type-tab').forEach(t => {
     t.classList.toggle('active', t.dataset.type === type);
   });
+  refreshIcons();
 }
 
 function renderDynamicFields(type, data) {
@@ -996,6 +1462,8 @@ function renderDynamicFields(type, data) {
       this.value = v;
     });
   }
+
+  refreshIcons();
 }
 
 function collectFormData(type) {
@@ -1012,10 +1480,15 @@ function collectFormData(type) {
 async function copyText(text, btn) {
   try {
     await navigator.clipboard.writeText(text);
-    const orig = btn.textContent;
-    btn.textContent = '✓';
+    const icon = btn.querySelector('i');
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+    if (icon) icon.setAttribute('data-lucide', 'check');
+    refreshIcons();
+    setTimeout(() => { 
+      btn.classList.remove('copied'); 
+      if (icon) icon.setAttribute('data-lucide', 'copy');
+      refreshIcons();
+    }, 2000);
   } catch {
     const ta = document.createElement('textarea');
     ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
@@ -1034,25 +1507,32 @@ function esc(s) {
 // ══════════════════════════════════════════════════════════════
 //  Event Wiring
 // ══════════════════════════════════════════════════════════════
-document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('login-password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('logout-btn').addEventListener('click', doLogout);
-document.getElementById('add-btn').addEventListener('click', openAdd);
-document.getElementById('edit-cancel-btn').addEventListener('click', closeEdit);
-document.getElementById('edit-save-btn').addEventListener('click', saveItem);
+document.getElementById('login-btn')?.addEventListener('click', doLogin);
+document.getElementById('login-password')?.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('logout-btn')?.addEventListener('click', doLogout);
+document.getElementById('fab-add-btn')?.addEventListener('click', openAdd);
+document.getElementById('edit-close-btn')?.addEventListener('click', closeEdit);
+document.getElementById('edit-cancel-btn')?.addEventListener('click', closeEdit);
+document.getElementById('edit-save-btn')?.addEventListener('click', saveItem);
 
-// Filter tabs
-document.getElementById('filter-tabs').addEventListener('click', e => {
-  const tab = e.target.closest('.tab');
-  if (!tab) return;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-  S.filter = tab.dataset.filter;
+// Sync mobile tab bar clicks
+function setFilter(filter) {
+  S.filter = filter;
+  document.querySelectorAll('.mobile-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.filter === filter);
+  });
   renderGrid();
+}
+
+// Mobile Bottom Tab Bar Wiring
+document.querySelectorAll('.mobile-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    setFilter(tab.dataset.filter);
+  });
 });
 
 // Type tabs in edit modal
-document.getElementById('type-tabs').addEventListener('click', e => {
+document.getElementById('type-tabs')?.addEventListener('click', e => {
   const tab = e.target.closest('.type-tab');
   if (!tab || S.editId) return; // Can't change type when editing
   setActiveTypeTab(tab.dataset.type);
@@ -1061,19 +1541,22 @@ document.getElementById('type-tabs').addEventListener('click', e => {
 });
 
 // Search
-document.getElementById('search-input').addEventListener('input', e => {
+document.getElementById('search-input')?.addEventListener('input', e => {
   S.search = e.target.value;
   renderGrid();
 });
 
 // Close modals on overlay click
-document.getElementById('view-overlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeView(); });
-document.getElementById('edit-overlay').addEventListener('click', e => { if(e.target === e.currentTarget) closeEdit(); });
+document.getElementById('view-overlay')?.addEventListener('click', e => { if(e.target === e.currentTarget) closeView(); });
+document.getElementById('edit-overlay')?.addEventListener('click', e => { if(e.target === e.currentTarget) closeEdit(); });
 
 // Keyboard
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeView(); closeEdit(); }
 });
+
+// Automatic resize support to switch layouts smoothly
+window.addEventListener('resize', renderGrid);
 
 // ── Go! ────────────────────────────────────────────────────
 init();
