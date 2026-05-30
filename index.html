@@ -811,8 +811,8 @@ function renderBankCard(item, idx) {
       <div class="card-number-display">${masked}</div>
       <div class="card-footer">
         <div>
-          <div class="card-holder">${esc(item.title)}</div>
           <div class="card-expiry-val">${esc(p.expiry||'')}</div>
+          <div class="card-holder">${esc(item.title)}</div>
         </div>
       </div>
     </div>
@@ -876,8 +876,8 @@ function buildViewContent(item) {
       <div class="card-number-display">${num || '•••• •••• •••• ••••'}</div>
       <div class="card-footer">
         <div>
-          <div class="card-holder">${esc(d.cardholder||'')}</div>
           <div class="card-expiry-val">${esc(d.expiry||'')}</div>
+          <div class="card-holder">${esc(d.cardholder||'')}</div>
         </div>
       </div>
     </div>
@@ -1153,7 +1153,7 @@ init();
 // ── Service Worker ─────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js?v=4').catch(() => {});
+    navigator.serviceWorker.register('sw.js?v=5').catch(() => {});
   });
 }
 </script>
