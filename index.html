@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Vault — Личное хранилище</title>
 <meta name="description" content="Безопасное и стильное личное зашифрованное хранилище для ваших паролей, карт и документов.">
 
@@ -89,7 +92,7 @@ body {
 .form-group input {
   width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border);
   border-radius: var(--r); padding: 12px 15px;
-  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 16px; outline: none;
   transition: border-color .2s, background .2s;
 }
 .form-group input:focus { border-color: rgba(99,102,241,.6); background: rgba(255,255,255,.08); }
@@ -153,7 +156,7 @@ body {
 .search-wrap input {
   width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--border);
   border-radius: var(--r); padding: 9px 13px 9px 34px;
-  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; outline: none;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 16px; outline: none;
   transition: border-color .2s, background .2s;
 }
 .search-wrap input:focus { border-color: rgba(99,102,241,.5); background: rgba(255,255,255,.09); }
@@ -400,7 +403,7 @@ body {
 .edit-field input, .edit-field select, .edit-field textarea {
   width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--border);
   border-radius: var(--r); padding: 11px 13px;
-  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 15px; outline: none;
+  color: var(--text); font-family: 'Figtree', sans-serif; font-size: 16px; outline: none;
   transition: border-color .2s, background .2s;
 }
 .edit-field input:focus, .edit-field select:focus, .edit-field textarea:focus {
@@ -438,6 +441,16 @@ body {
 @media (max-width: 639px) {
   .section-tabs { display: none; }
   .vault-content { padding-bottom: calc(var(--tab-h) + 20px); }
+}
+/* Hide scrollbars globally on mobile screens */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
 }
 </style>
 </head>
@@ -1126,7 +1139,7 @@ init();
 // ── Service Worker ─────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js?v=2').catch(() => {});
   });
 }
 </script>
